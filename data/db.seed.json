@@ -1,0 +1,63 @@
+{
+  "categorias": [
+    { "id": "mudanca", "nome": "Mudança", "icone": "local_shipping" },
+    { "id": "faxina", "nome": "Faxina", "icone": "cleaning_services" },
+    { "id": "reparos", "nome": "Reparos", "icone": "plumbing" },
+    { "id": "eletrica", "nome": "Elétrica", "icone": "electrical_services" },
+    { "id": "jardim", "nome": "Jardim", "icone": "yard" },
+    { "id": "carro", "nome": "Carro", "icone": "directions_car" },
+    { "id": "aulas", "nome": "Aulas", "icone": "school" },
+    { "id": "pet", "nome": "Pet", "icone": "pets" },
+    { "id": "moveis", "nome": "Móveis", "icone": "chair" },
+    { "id": "compras", "nome": "Compras", "icone": "shopping_cart" }
+  ],
+
+  "bairros": {
+    "Vila Mariana": { "lat": -23.5822, "lon": -46.6343 },
+    "Ibirapuera":   { "lat": -23.5874, "lon": -46.6576 },
+    "Paraíso":      { "lat": -23.5729, "lon": -46.6417 },
+    "Saúde":        { "lat": -23.6103, "lon": -46.6349 }
+  },
+
+  "usuarios": [
+    {
+      "id": "u1", "nome": "Matheus", "email": "matheus@exemplo.com", "senhaHash": "demo",
+      "bairro": "Vila Mariana", "nota": 4.9, "verificado": true, "membroDesde": 2022,
+      "skills": ["moveis", "mudanca"], "raioPadrao": 5
+    },
+    { "id": "u2", "nome": "Renata", "email": "renata@exemplo.com", "senhaHash": "demo", "bairro": "Vila Mariana", "nota": 4.9, "verificado": true, "membroDesde": 2023, "skills": [], "raioPadrao": 5 },
+    { "id": "u3", "nome": "João", "email": "joao@exemplo.com", "senhaHash": "demo", "bairro": "Vila Mariana", "nota": 4.7, "verificado": false, "membroDesde": 2022, "skills": [], "raioPadrao": 5 },
+    { "id": "u4", "nome": "Camila", "email": "camila@exemplo.com", "senhaHash": "demo", "bairro": "Ibirapuera", "nota": 5.0, "verificado": true, "membroDesde": 2024, "skills": [], "raioPadrao": 5 },
+    { "id": "u5", "nome": "Fernando", "email": "fernando@exemplo.com", "senhaHash": "demo", "bairro": "Paraíso", "nota": 4.8, "verificado": true, "membroDesde": 2021, "skills": [], "raioPadrao": 5 },
+    { "id": "u6", "nome": "Bianca", "email": "bianca@exemplo.com", "senhaHash": "demo", "bairro": "Vila Mariana", "nota": 4.9, "verificado": false, "membroDesde": 2023, "skills": [], "raioPadrao": 5 },
+    { "id": "u7", "nome": "Marcos", "email": "marcos@exemplo.com", "senhaHash": "demo", "bairro": "Saúde", "nota": 4.6, "verificado": true, "membroDesde": 2020, "skills": [], "raioPadrao": 5 },
+    { "id": "u8", "nome": "Patrícia", "email": "patricia@exemplo.com", "senhaHash": "demo", "bairro": "Vila Mariana", "nota": 5.0, "verificado": true, "membroDesde": 2022, "skills": [], "raioPadrao": 5 },
+    { "id": "u9", "nome": "Luiza", "email": "luiza@exemplo.com", "senhaHash": "demo", "bairro": "Ibirapuera", "nota": 4.9, "verificado": false, "membroDesde": 2024, "skills": [], "raioPadrao": 5 }
+  ],
+
+  "pedidos": [
+    { "id": 1, "titulo": "Ajuda pra mudança de apartamento", "desc": "Preciso descer sofá, geladeira e ~15 caixas do 3º andar sem elevador. Sábado de manhã.", "cat": "mudanca", "preco": 180, "bairro": "Vila Mariana", "autorId": "u2", "quando": "Sábado, manhã", "status": "aberto", "createdAt": "2026-08-01T09:00:00.000Z" },
+    { "id": 2, "titulo": "Olhar o carro antes de viagem", "desc": "Meu Onix tá fazendo um barulho estranho no freio. Preciso de alguém de confiança pra dar uma olhada essa semana.", "cat": "carro", "preco": 90, "bairro": "Vila Mariana", "autorId": "u3", "quando": "Esta semana", "status": "aberto", "createdAt": "2026-08-01T09:05:00.000Z" },
+    { "id": 3, "titulo": "Faxina pesada pós-obra", "desc": "Reforma acabou de terminar, apartamento cheio de poeira de gesso. Preciso limpar tudo antes de mudar os móveis.", "cat": "faxina", "preco": 220, "bairro": "Ibirapuera", "autorId": "u4", "quando": "Flexível", "status": "aberto", "createdAt": "2026-08-01T09:10:00.000Z" },
+    { "id": 4, "titulo": "Trocar tomada que caiu do lugar", "desc": "Uma tomada da sala soltou da parede. Preciso de alguém com experiência em elétrica básica.", "cat": "eletrica", "preco": 70, "bairro": "Paraíso", "autorId": "u5", "quando": "Hoje à noite", "status": "aberto", "createdAt": "2026-08-01T09:15:00.000Z" },
+    { "id": 5, "titulo": "Montar guarda-roupa novo", "desc": "Comprei um guarda-roupa de 6 portas, veio desmontado. Preciso de ajuda pra montar no fim de semana.", "cat": "moveis", "preco": 130, "bairro": "Vila Mariana", "autorId": "u6", "quando": "Fim de semana", "status": "aberto", "createdAt": "2026-08-01T09:20:00.000Z" },
+    { "id": 6, "titulo": "Podar árvores do quintal", "desc": "Duas árvores grandes precisando de poda antes do verão. Tenho as ferramentas, só falta mão de obra.", "cat": "jardim", "preco": 160, "bairro": "Saúde", "autorId": "u7", "quando": "Antes do verão", "status": "aberto", "createdAt": "2026-08-01T09:25:00.000Z" },
+    { "id": 7, "titulo": "Aula de reforço de matemática", "desc": "Meu filho de 14 anos tá com dificuldade em álgebra. Duas aulas por semana, presencial.", "cat": "aulas", "preco": 60, "bairro": "Vila Mariana", "autorId": "u8", "quando": "2x por semana", "status": "aberto", "createdAt": "2026-08-01T09:30:00.000Z" },
+    { "id": 8, "titulo": "Buscar compras no mercado", "desc": "Estou de repouso médico e preciso de alguém pra fazer uma compra grande no mercado e trazer em casa.", "cat": "compras", "preco": 50, "bairro": "Ibirapuera", "autorId": "u9", "quando": "A combinar", "status": "aberto", "createdAt": "2026-08-01T09:35:00.000Z" }
+  ],
+
+  "conversas": [
+    {
+      "id": "c1", "pedidoId": 1, "participantes": ["u1", "u2"],
+      "mensagens": [
+        { "id": "m1", "de": "u2", "texto": "Oi! Vi que você topa ajudar com a mudança, ainda tá de pé pra sábado?", "ts": "2026-08-02T10:00:00.000Z" },
+        { "id": "m2", "de": "u1", "texto": "Oi Renata! Tô sim, que horas fica melhor pra você?", "ts": "2026-08-02T10:02:00.000Z" },
+        { "id": "m3", "de": "u2", "texto": "Perfeito, que tal 9h? O prédio não tem elevador então já aviso 😅", "ts": "2026-08-02T10:03:00.000Z" }
+      ]
+    }
+  ],
+
+  "propostas": [],
+  "nextPedidoId": 9,
+  "nextUsuarioSeq": 10
+}
