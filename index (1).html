@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Favor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#004ac6;
+    --primary-dark:#003ea8;
+    --primary-container:#dbe1ff;
+    --on-primary-container:#00174b;
+    --secondary:#855300;
+    --secondary-container:#fea619;
+    --secondary-container-dark:#e0910f;
+    --on-secondary-container:#2a1700;
+    --tertiary:#006242;
+    --tertiary-container:#007d55;
+    --tertiary-tint:#e3f5ee;
+    --background:#f6f7f9;
+    --surface:#ffffff;
+    --surface-low:#f0f1f4;
+    --surface-variant:#e6e8ee;
+    --on-background:#191c1e;
+    --on-surface-variant:#5b5f6a;
+    --outline:#8d909c;
+    --outline-variant:#d6d8e0;
+    --error:#ba1a1a;
+    --radius-lg:16px;
+    --radius-md:12px;
+    --radius-sm:8px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#e7e2d6;
+    font-family:'Inter',sans-serif;
+    color:var(--on-background);
+    display:flex; justify-content:center; align-items:flex-start;
+    min-height:100vh;
+    padding:18px 0;
+  }
+  .material-symbols-outlined{ font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24; line-height:1; vertical-align:middle; }
+  .msf{ font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24; }
+
+  #phone{
+    width:100%; max-width:430px; min-height:812px; max-height:900px;
+    background:var(--background);
+    display:flex; flex-direction:column;
+    position:relative; overflow:hidden;
+    box-shadow:0 30px 60px rgba(0,0,0,0.45);
+    border-radius:28px; border:8px solid #17181c;
+  }
+
+  /* ---------- Header ---------- */
+  #topbar{
+    background:var(--surface); position:sticky; top:0; z-index:20;
+    box-shadow:0 2px 8px rgba(20,20,40,0.06);
+    padding:14px 16px 12px;
+  }
+  .topbar-row{ display:flex; align-items:center; justify-content:space-between; }
+  .brandmark{ display:flex; align-items:center; gap:8px; }
+  .brandmark .material-symbols-outlined{ color:var(--primary); font-size:26px; }
+  .wordmark{ font-size:20px; font-weight:800; color:var(--primary); letter-spacing:-0.2px; }
+  .avatar-btn{
+    width:34px; height:34px; border-radius:50%; background:var(--primary-container);
+    color:var(--on-primary-container); display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:14px; flex-shrink:0; border:none; cursor:pointer;
+  }
+  .locrow{
+    display:flex; align-items:center; gap:5px; margin-top:9px;
+    font-size:13px; color:var(--on-surface-variant);
+  }
+  .locrow .material-symbols-outlined{ font-size:17px; color:var(--on-surface-variant); }
+  .locrow b{ color:var(--primary); font-weight:700; }
+
+  /* ---------- Scroll area ---------- */
+  #content{ flex:1; overflow-y:auto; padding-bottom:96px; -ms-overflow-style:none; scrollbar-width:none; }
+  #content::-webkit-scrollbar{ display:none; }
+  .screen{ display:none; animation:fade .2s ease; }
+  .screen.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .section-pad{ padding:18px 16px 2px; }
+  p.eyebrow{ margin:0 0 4px; font-size:12px; font-weight:700; letter-spacing:0.3px; color:var(--on-surface-variant); text-transform:uppercase; }
+  h1.title{ font-size:23px; font-weight:800; margin:0 0 5px; letter-spacing:-0.3px; line-height:1.15; color:var(--on-background); }
+  p.sub{ margin:0 0 14px; font-size:13.5px; color:var(--on-surface-variant); line-height:1.5; }
+
+  /* ---------- View toggle ---------- */
+  .view-toggle{ display:flex; gap:3px; margin:0 16px 12px; background:var(--surface-low); border-radius:10px; padding:3px; width:max-content; }
+  .view-toggle button{
+    display:flex; align-items:center; gap:5px; border:none; background:none; cursor:pointer;
+    font-family:inherit; font-weight:600; font-size:12.5px; color:var(--on-surface-variant);
+    padding:8px 13px; border-radius:8px;
+  }
+  .view-toggle button .material-symbols-outlined{ font-size:17px; }
+  .view-toggle button.active{ background:var(--surface); color:var(--primary); box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+
+  /* ---------- Filter chips ---------- */
+  .chiprow{ display:flex; gap:8px; overflow-x:auto; padding:0 16px 14px; -ms-overflow-style:none; scrollbar-width:none; }
+  .chiprow::-webkit-scrollbar{ display:none; }
+  .chip{
+    flex-shrink:0; display:flex; align-items:center; gap:6px; cursor:pointer;
+    font-family:inherit; font-weight:600; font-size:12.5px; color:var(--on-surface-variant);
+    padding:8px 13px; border-radius:20px; border:1px solid var(--outline-variant); background:var(--surface);
+  }
+  .chip .material-symbols-outlined{ font-size:16px; }
+  .chip.active{ background:var(--primary-container); color:var(--primary-dark); border-color:transparent; font-weight:700; }
+
+  /* ---------- Ticket card ---------- */
+  .feed{ padding:0 16px; display:flex; flex-direction:column; gap:14px; }
+  .ticket{
+    background:var(--surface); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer;
+    box-shadow:0 2px 10px rgba(20,20,50,0.06); border:1px solid var(--outline-variant);
+    transition:box-shadow .15s;
+  }
+  .ticket:active{ box-shadow:0 1px 4px rgba(20,20,50,0.08); }
+  .ticket-main{ padding:14px 14px 12px; }
+  .ticket-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:9px; }
+  .cat-pill{
+    display:flex; align-items:center; gap:5px; background:var(--primary-container); color:var(--primary-dark);
+    padding:4px 10px 4px 8px; border-radius:20px; font-size:11.5px; font-weight:700;
+  }
+  .cat-pill .material-symbols-outlined{ font-size:15px; }
+  .ticket-when{ display:flex; align-items:center; gap:3px; font-size:11.5px; color:var(--on-surface-variant); }
+  .ticket-when .material-symbols-outlined{ font-size:15px; }
+  .ticket-title{ font-size:15.5px; font-weight:700; margin:0 0 8px; line-height:1.3; color:var(--on-background); }
+  .ticket-meta{ display:flex; align-items:center; gap:8px; color:var(--on-surface-variant); font-size:12px; margin-bottom:11px; }
+  .ticket-meta span{ display:flex; align-items:center; gap:3px; }
+  .ticket-meta .material-symbols-outlined{ font-size:15px; }
+  .ticket-dot{ width:3px; height:3px; border-radius:50%; background:var(--outline); }
+  .ticket-author{ display:flex; align-items:center; gap:7px; }
+  .mini-avatar{
+    width:22px; height:22px; border-radius:50%; background:var(--surface-variant); color:var(--on-surface-variant);
+    display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:700; flex-shrink:0;
+  }
+  .ticket-author-name{ font-size:12.5px; font-weight:600; color:var(--on-background); }
+  .verified-tag{ color:var(--tertiary-container); font-size:15px; margin-left:2px; }
+  .ticket-stub{
+    display:flex; align-items:center; justify-content:space-between; padding:11px 14px;
+    border-top:1.5px dashed var(--outline-variant); background:var(--surface-low); position:relative;
+  }
+  .ticket-stub::before, .ticket-stub::after{
+    content:''; position:absolute; top:-9px; width:18px; height:18px; border-radius:50%; background:var(--background);
+  }
+  .ticket-stub::before{ left:-9px; }
+  .ticket-stub::after{ right:-9px; }
+  .price-label{ font-size:10px; font-weight:700; letter-spacing:0.4px; text-transform:uppercase; color:var(--on-surface-variant); display:block; }
+  .price-value{ font-size:17px; font-weight:800; color:var(--on-background); }
+  .btn-sm{
+    border:none; background:var(--primary); color:#fff; font-family:inherit; font-weight:700; font-size:12.5px;
+    padding:10px 14px; border-radius:10px; cursor:pointer;
+  }
+  .btn-sm:active{ transform:scale(0.97); }
+
+  /* ---------- Empty state ---------- */
+  .empty{
+    margin:20px 16px; padding:34px 18px; border:1.5px dashed var(--outline-variant); border-radius:var(--radius-lg);
+    text-align:center; color:var(--on-surface-variant); font-size:13px;
+    display:flex; flex-direction:column; align-items:center; gap:8px; background:var(--surface);
+  }
+  .empty .material-symbols-outlined{ font-size:34px; color:var(--outline); }
+  .empty b{ display:block; color:var(--on-background); font-weight:700; font-size:14.5px; }
+
+  /* ---------- Map ---------- */
+  .mapbox{
+    margin:0 16px 10px; border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--outline-variant);
+    position:relative; height:270px; background:var(--surface-variant);
+  }
+  .mapbox iframe{ width:100%; height:100%; border:0; display:block; }
+  .mapbox .pins{ position:absolute; inset:0; pointer-events:none; }
+  .pin{
+    position:absolute; transform:translate(-50%,-100%); pointer-events:auto; cursor:pointer;
+    background:none; border:none; padding:0; display:flex; flex-direction:column; align-items:center;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+  .pin-body{
+    width:30px; height:30px; border-radius:50% 50% 50% 4px; transform:rotate(-45deg);
+    background:var(--primary); display:flex; align-items:center; justify-content:center; margin-bottom:2px;
+    border:2px solid #fff;
+  }
+  .pin-body .material-symbols-outlined{ transform:rotate(45deg); font-size:15px; color:#fff; }
+  .pin-tag{
+    font-size:9.5px; font-weight:700; background:var(--on-background); color:#fff; padding:2px 6px; border-radius:6px; white-space:nowrap;
+  }
+  .pin.pin-you .pin-body{ background:var(--tertiary-container); border-radius:50%; transform:none; }
+  .pin.pin-you .pin-body .material-symbols-outlined{ transform:none; }
+  .pin.pin-you .pin-tag{ background:var(--tertiary-container); }
+  .maplink{
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    margin:0 16px 6px; font-weight:700; font-size:12.5px; color:var(--primary); text-decoration:none;
+    padding:10px; border:1.5px dashed var(--outline-variant); border-radius:10px;
+  }
+  .maplink .material-symbols-outlined{ font-size:16px; }
+  .mapsel{
+    display:none; align-items:center; gap:11px; margin:6px 16px 4px; padding:12px;
+    background:var(--surface); border:1px solid var(--outline-variant); border-radius:var(--radius-md);
+  }
+  .mapsel-body{ min-width:0; flex:1; }
+  .mapsel-title{ font-weight:700; font-size:13.5px; line-height:1.25; margin-bottom:2px; }
+  .mapsel-meta{ font-size:11.5px; color:var(--on-surface-variant); }
+  .mapsel-meta b{ color:var(--on-background); }
+
+  /* ---------- Detalhes do Pedido ---------- */
+  .subheader{
+    background:var(--surface); position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:10px;
+    padding:14px 8px; box-shadow:0 2px 8px rgba(20,20,40,0.06);
+  }
+  .icon-btn{ background:none; border:none; cursor:pointer; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--on-background); }
+  .icon-btn:active{ background:var(--surface-low); }
+  .subheader h2{ font-size:16.5px; font-weight:700; margin:0; flex:1; text-align:center; padding-right:38px; }
+  .card{ background:var(--surface); margin:14px 16px; padding:16px; border-radius:var(--radius-lg); border:1px solid var(--outline-variant); }
+  .author-row{ display:flex; align-items:center; gap:13px; }
+  .author-avatar{
+    width:54px; height:54px; border-radius:50%; background:var(--primary-container); color:var(--on-primary-container);
+    display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; flex-shrink:0;
+  }
+  .author-name{ font-size:17px; font-weight:800; margin-bottom:3px; }
+  .author-sub{ display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--on-surface-variant); flex-wrap:wrap; }
+  .author-sub .material-symbols-outlined{ font-size:15px; }
+  .star-ic{ color:var(--secondary-container-dark); }
+  .verif-ic{ color:var(--tertiary-container); }
+  .dot-sep{ color:var(--outline); }
+  .det-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .det-title{ font-size:19px; font-weight:800; line-height:1.25; margin:0 0 8px; }
+  .price-box{
+    background:#fff3e0; color:var(--secondary); padding:8px 12px; border-radius:10px; text-align:center; flex-shrink:0;
+  }
+  .price-box .lbl{ display:block; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; opacity:0.8; }
+  .price-box .val{ font-size:17px; font-weight:800; }
+  .divider{ height:1px; background:var(--outline-variant); margin:14px 0; }
+  .info-row{ display:flex; align-items:flex-start; gap:11px; margin-bottom:13px; font-size:13.5px; color:var(--on-surface-variant); line-height:1.5; }
+  .info-row:last-child{ margin-bottom:0; }
+  .info-row .material-symbols-outlined{ font-size:19px; color:var(--outline); margin-top:1px; flex-shrink:0; }
+  .info-row strong{ color:var(--on-background); }
+  .banner-safe{
+    display:flex; align-items:center; gap:11px; margin:0 16px 14px; padding:13px; border-radius:var(--radius-md);
+    background:var(--tertiary-tint); border:1px solid rgba(0,125,85,0.18);
+  }
+  .banner-safe .material-symbols-outlined{ font-size:26px; color:var(--tertiary-container); flex-shrink:0; }
+  .banner-safe h3{ margin:0 0 2px; font-size:12.5px; font-weight:700; color:var(--tertiary); }
+  .banner-safe p{ margin:0; font-size:11.5px; color:var(--tertiary); opacity:0.85; line-height:1.4; }
+  .fixed-cta{
+    position:absolute; bottom:0; left:0; right:0; padding:14px 16px; background:var(--surface);
+    border-top:1px solid var(--outline-variant); z-index:15;
+  }
+  .btn-amber{
+    width:100%; border:none; background:var(--secondary-container); color:var(--on-secondary-container);
+    font-family:inherit; font-weight:700; font-size:14.5px; padding:14px; border-radius:12px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-amber:active{ transform:scale(0.98); background:var(--secondary-container-dark); }
+
+  /* ---------- Forms ---------- */
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:12.5px; font-weight:700; margin-bottom:7px; color:var(--on-background); }
+  .field input, .field textarea{
+    width:100%; border:1.5px solid transparent; background:var(--surface-low); border-radius:12px;
+    padding:13px 13px; font-family:inherit; font-size:14px; color:var(--on-background); outline:none;
+  }
+  .field input:focus, .field textarea:focus{ border-color:var(--primary); background:var(--surface); }
+  .field textarea{ resize:vertical; min-height:80px; }
+  .field-hint{ font-size:11.5px; color:var(--on-surface-variant); margin-top:6px; line-height:1.4; }
+  .valwrap{ position:relative; }
+  .valwrap span{ position:absolute; left:13px; top:50%; transform:translateY(-50%); font-weight:700; color:var(--on-surface-variant); font-size:14px; }
+  .valwrap input{ padding-left:38px; font-weight:700; }
+  .catgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:9px; }
+  .catpick{
+    border:1.5px solid var(--outline-variant); background:var(--surface); border-radius:12px; padding:11px 4px;
+    text-align:center; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:5px;
+  }
+  .catpick .material-symbols-outlined{ font-size:20px; color:var(--on-surface-variant); }
+  .catpick span{ display:block; font-size:9.5px; font-weight:700; color:var(--on-surface-variant); }
+  .catpick.sel{ border-color:var(--primary); background:var(--primary-container); }
+  .catpick.sel .material-symbols-outlined, .catpick.sel span{ color:var(--primary-dark); }
+  .banner-info{
+    display:flex; align-items:flex-start; gap:11px; margin:2px 0 4px; padding:13px; border-radius:var(--radius-md);
+    background:var(--primary-container); opacity:0.9;
+  }
+  .banner-info .material-symbols-outlined{ color:var(--primary); font-size:22px; flex-shrink:0; }
+  .banner-info h3{ margin:0 0 2px; font-size:12.5px; font-weight:700; color:var(--primary-dark); }
+  .banner-info p{ margin:0; font-size:11.5px; color:var(--on-primary-container); opacity:0.85; line-height:1.4; }
+  .prop-summary{ display:flex; align-items:center; gap:12px; padding-top:13px; margin-top:13px; border-top:1px solid var(--outline-variant); }
+  .prop-summary .mini-avatar{ width:36px; height:36px; font-size:13px; }
+
+  /* ---------- Oferecer ---------- */
+  .skillgrid{ display:flex; flex-wrap:wrap; gap:8px; padding:0 16px 8px; }
+  .radius-box{ margin:0 16px 14px; padding:14px; background:var(--surface); border:1px solid var(--outline-variant); border-radius:var(--radius-md); }
+  .radius-row{ display:flex; justify-content:space-between; font-weight:700; font-size:12.5px; margin-bottom:9px; }
+  .radius-row b{ color:var(--primary); }
+  input[type=range]{ width:100%; accent-color:var(--primary); }
+
+  /* ---------- Mensagens ---------- */
+  .searchbox{ position:relative; margin:0 16px 12px; }
+  .searchbox .material-symbols-outlined{ position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--outline); font-size:19px; }
+  .searchbox input{
+    width:100%; background:var(--surface-low); border:none; border-radius:12px; padding:12px 12px 12px 38px;
+    font-family:inherit; font-size:13.5px; outline:none; box-sizing:border-box;
+  }
+  .searchbox input:focus{ box-shadow:0 0 0 2px var(--primary-container); background:var(--surface); }
+  .convolist{ margin:0 16px; background:var(--surface); border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--outline-variant); }
+  .convo{ display:flex; align-items:flex-start; gap:11px; padding:13px; border-bottom:1px solid var(--outline-variant); cursor:pointer; position:relative; }
+  .convo:last-child{ border-bottom:none; }
+  .convo:active{ background:var(--surface-low); }
+  .avatar{
+    width:44px; height:44px; border-radius:50%; background:var(--primary-container); color:var(--on-primary-container); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800;
+  }
+  .convo-body{ min-width:0; flex:1; }
+  .convo-top{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:2px; }
+  .convo-name{ font-weight:700; font-size:13.5px; }
+  .convo-time{ font-size:11px; color:var(--on-surface-variant); white-space:nowrap; }
+  .convo-tag{ font-size:11px; font-weight:600; color:var(--secondary); margin-bottom:2px; }
+  .convo-last{ font-size:12.5px; color:var(--on-surface-variant); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .unread-dot{ width:8px; height:8px; border-radius:50%; background:var(--primary); position:absolute; right:13px; top:20px; }
+
+  #chatview{ display:flex; flex-direction:column; height:100%; }
+  .chat-head{ display:flex; align-items:center; gap:10px; padding:12px 8px; border-bottom:1px solid var(--outline-variant); background:var(--surface); }
+  .chat-msgs{ flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:9px; }
+  .bubble{ max-width:78%; padding:10px 13px; border-radius:14px; font-size:13.5px; line-height:1.42; }
+  .bubble.them{ background:var(--surface); border:1px solid var(--outline-variant); align-self:flex-start; border-bottom-left-radius:3px; }
+  .bubble.me{ background:var(--primary); color:#fff; align-self:flex-end; border-bottom-right-radius:3px; font-weight:500; }
+  .chat-input{ display:flex; gap:8px; padding:12px; border-top:1px solid var(--outline-variant); background:var(--surface); }
+  .chat-input input{ flex:1; border:1.5px solid var(--outline-variant); border-radius:22px; padding:11px 15px; font-size:13.5px; outline:none; font-family:inherit; }
+  .chat-input input:focus{ border-color:var(--primary); }
+  .chat-input button{ border:none; background:var(--primary); color:#fff; width:42px; height:42px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+  /* ---------- Perfil ---------- */
+  .profile-hero{ padding:26px 18px 16px; text-align:center; }
+  .profile-avatar{
+    width:74px; height:74px; border-radius:50%; margin:0 auto 12px; background:var(--primary-container);
+    display:flex; align-items:center; justify-content:center; color:var(--on-primary-container);
+    font-size:28px; font-weight:800; border:3px solid var(--surface); box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  }
+  .profile-name{ font-size:20px; font-weight:800; }
+  .profile-loc{ font-size:12.5px; color:var(--on-surface-variant); margin-top:3px; }
+  .stat-row{ display:flex; gap:10px; padding:0 16px 16px; }
+  .stat-box{ flex:1; background:var(--surface); border:1px solid var(--outline-variant); border-radius:var(--radius-md); padding:13px; text-align:center; }
+  .stat-num{ font-weight:800; font-size:18px; color:var(--primary); }
+  .stat-lbl{ font-size:10px; color:var(--on-surface-variant); font-weight:700; letter-spacing:0.3px; text-transform:uppercase; margin-top:3px; }
+  .list-card{ margin:0 16px 20px; background:var(--surface); border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--outline-variant); }
+  .list-item{ display:flex; align-items:center; gap:13px; padding:14px 15px; border-bottom:1px solid var(--outline-variant); font-size:13.5px; font-weight:600; cursor:pointer; }
+  .list-item:last-child{ border-bottom:none; }
+  .list-item:active{ background:var(--surface-low); }
+  .list-item .material-symbols-outlined{ color:var(--on-surface-variant); font-size:20px; }
+  .list-item .arrow{ margin-left:auto; color:var(--outline); font-size:20px; }
+
+  /* ---------- Bottom nav ---------- */
+  #navbar{
+    position:absolute; bottom:0; left:0; right:0; background:var(--surface);
+    display:flex; justify-content:space-around; align-items:center; padding:8px 4px 10px; z-index:30;
+    box-shadow:0 -3px 14px rgba(20,20,50,0.08); border-top:1px solid var(--outline-variant);
+  }
+  .navbtn{
+    background:none; border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px;
+    color:var(--on-surface-variant); font-family:inherit; font-weight:600; font-size:10px; padding:6px 12px; border-radius:14px; flex:1; max-width:78px;
+  }
+  .navbtn .material-symbols-outlined{ font-size:22px; }
+  .navbtn.active{ background:var(--primary-container); color:var(--on-primary-container); }
+
+  .toast{
+    position:absolute; bottom:88px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--on-background); color:#fff; font-weight:600; font-size:13px; padding:11px 18px;
+    border-radius:24px; opacity:0; pointer-events:none; transition:.25s; z-index:60; white-space:nowrap;
+    box-shadow:0 6px 20px rgba(0,0,0,0.25);
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div id="phone">
+
+  <!-- LOGIN / CADASTRO -->
+  <div id="authScreen" style="position:absolute; inset:0; background:var(--background); z-index:100; display:none; flex-direction:column; overflow-y:auto;">
+    <div class="section-pad" style="padding-top:52px;">
+      <div class="brandmark" style="margin-bottom:22px;">
+        <span class="material-symbols-outlined msf" style="font-size:30px; color:var(--primary);">handshake</span>
+        <span class="wordmark" style="font-size:26px;">Favor</span>
+      </div>
+      <p class="eyebrow">bem-vindo</p>
+      <h1 class="title" id="authTitulo">Entrar</h1>
+      <p class="sub" id="authSub">Entre pra ver os pedidos perto de você.</p>
+    </div>
+    <div style="padding:0 16px;">
+      <div id="authErro" style="display:none; background:#fdecea; color:var(--error); border-radius:var(--radius-md); padding:11px 13px; font-size:13px; font-weight:600; margin-bottom:14px;"></div>
+      <div class="field" id="authFieldNome" style="display:none;">
+        <label>Seu nome</label>
+        <input id="authNome" placeholder="Ex: Matheus Silva">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input id="authEmail" type="email" placeholder="voce@exemplo.com">
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input id="authSenha" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')submitAuth()">
+      </div>
+      <div class="field" id="authFieldBairro" style="display:none;">
+        <label>Bairro</label>
+        <input id="authBairro" placeholder="Ex: Vila Mariana">
+      </div>
+      <button class="btn-amber" id="authBtn" onclick="submitAuth()">
+        <span class="material-symbols-outlined">login</span><span id="authBtnTxt">Entrar</span>
+      </button>
+      <button id="authToggleBtn" onclick="toggleAuthMode()" style="width:100%; background:none; border:none; color:var(--primary); font-family:inherit; font-weight:700; font-size:13px; padding:16px; cursor:pointer;">Não tem conta? Cadastre-se</button>
+    </div>
+  </div>
+
+  <div id="topbar">
+    <div class="topbar-row">
+      <div class="brandmark">
+        <span class="material-symbols-outlined msf">handshake</span>
+        <span class="wordmark">Favor</span>
+      </div>
+      <button class="avatar-btn" id="topAvatar" onclick="goTo('perfil')">M</button>
+    </div>
+    <div class="locrow">
+      <span class="material-symbols-outlined">location_on</span>
+      Mostrando pedidos perto de <b id="bairroAtual">Vila Mariana</b>
+    </div>
+  </div>
+
+  <div id="content">
+
+    <!-- EXPLORAR -->
+    <div class="screen active" id="screen-explorar">
+      <div class="section-pad">
+        <p class="eyebrow">perto de você</p>
+        <h1 class="title">O que precisa de uma mão hoje?</h1>
+        <p class="sub">Pedidos de vizinhos da sua região, do mais perto pro mais longe.</p>
+      </div>
+      <div class="view-toggle">
+        <button id="viewListBtn" class="active" onclick="setExplorarView('lista')">
+          <span class="material-symbols-outlined">list</span> Lista
+        </button>
+        <button id="viewMapBtn" onclick="setExplorarView('mapa')">
+          <span class="material-symbols-outlined">map</span> Mapa
+        </button>
+      </div>
+      <div class="chiprow" id="catFilterRow"></div>
+      <div class="feed" id="feedExplorar"></div>
+
+      <div id="mapWrap" style="display:none;">
+        <div class="mapbox">
+          <iframe id="mapFrame" loading="lazy" src=""></iframe>
+          <div class="pins" id="mapPins"></div>
+        </div>
+        <div class="mapsel" id="mapSelected"></div>
+        <a class="maplink" id="mapExternalLink" href="#" target="_blank" rel="noopener">
+          <span class="material-symbols-outlined">near_me</span> Abrir região no Google Maps
+        </a>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+
+    <!-- DETALHES DO PEDIDO -->
+    <div class="screen" id="screen-detalhes">
+      <div class="subheader">
+        <button class="icon-btn" onclick="goTo('explorar')"><span class="material-symbols-outlined">arrow_back</span></button>
+        <h2>Detalhes do Pedido</h2>
+      </div>
+      <div class="card">
+        <div class="author-row">
+          <div class="author-avatar" id="detAvatar">?</div>
+          <div>
+            <div class="author-name" id="detAutor">—</div>
+            <div class="author-sub">
+              <span class="material-symbols-outlined star-ic" style="font-size:16px;">star</span>
+              <span id="detNota">—</span>
+              <span class="dot-sep">•</span>
+              <span id="detVerif" style="display:flex; align-items:center; gap:3px;"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="det-top">
+          <div>
+            <h1 class="det-title" id="detTitulo">—</h1>
+            <div class="cat-pill" id="detCatPill"></div>
+          </div>
+          <div class="price-box">
+            <span class="lbl">Valor oferta</span>
+            <span class="val" id="detPreco">R$ 0</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="info-row"><span class="material-symbols-outlined">description</span><p id="detDesc" style="margin:0;">—</p></div>
+        <div class="info-row"><span class="material-symbols-outlined">calendar_month</span><span id="detQuando">—</span></div>
+        <div class="info-row"><span class="material-symbols-outlined">location_on</span><strong id="detBairro">—</strong></div>
+      </div>
+      <div class="banner-safe">
+        <span class="material-symbols-outlined">shield</span>
+        <div>
+          <h3>Pagamento protegido pelo Favor</h3>
+          <p>O valor só é liberado pra quem ajudar após a conclusão do serviço.</p>
+        </div>
+      </div>
+      <div style="height:76px"></div>
+      <div class="fixed-cta">
+        <button class="btn-amber" onclick="abrirProposta(pedidoAtual)"><span class="material-symbols-outlined">campaign</span>Enviar proposta</button>
+      </div>
+    </div>
+
+    <!-- ENVIAR PROPOSTA -->
+    <div class="screen" id="screen-proposta">
+      <div class="subheader">
+        <button class="icon-btn" onclick="goTo('detalhes')"><span class="material-symbols-outlined">arrow_back</span></button>
+        <h2>Enviar Proposta</h2>
+      </div>
+      <div style="padding:14px 16px 0;">
+        <div class="card" style="margin:0 0 16px;">
+          <div class="det-top" style="align-items:center;">
+            <div>
+              <div style="font-weight:700; font-size:14.5px; margin-bottom:4px;" id="propTitulo">—</div>
+              <div class="author-sub"><span class="material-symbols-outlined" style="font-size:16px;">location_on</span><span id="propLocal">—</span></div>
+            </div>
+            <div class="price-box"><span class="lbl">R$</span><span class="val" id="propPrecoOriginal">0</span></div>
+          </div>
+          <div class="prop-summary">
+            <div class="mini-avatar" id="propAvatar">?</div>
+            <div>
+              <div style="font-size:12.5px; font-weight:700;" id="propAutor">—</div>
+              <div style="font-size:11px; color:var(--on-surface-variant);" id="propMembro">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Sua mensagem</label>
+          <textarea id="propMsg" placeholder="Olá! Vi seu pedido e posso ajudar..."></textarea>
+          <div class="field-hint">Apresente-se e diga por que você é a pessoa ideal para este favor.</div>
+        </div>
+        <div class="field">
+          <label>Valor da sua oferta</label>
+          <div class="valwrap"><span>R$</span><input id="propValor" type="number"></div>
+          <div class="field-hint">Você pode oferecer o valor original ou propor um novo.</div>
+        </div>
+        <div class="banner-info">
+          <span class="material-symbols-outlined">security</span>
+          <div>
+            <h3>Pagamento seguro Favor</h3>
+            <p>O valor fica retido na plataforma. Você só recebe após a conclusão e confirmação do favor.</p>
+          </div>
+        </div>
+      </div>
+      <div style="height:80px"></div>
+      <div class="fixed-cta">
+        <button class="btn-amber" onclick="confirmarProposta()">Confirmar e enviar</button>
+      </div>
+    </div>
+
+    <!-- PUBLICAR -->
+    <div class="screen" id="screen-publicar">
+      <div class="section-pad">
+        <p class="eyebrow">novo pedido</p>
+        <h1 class="title">Descreva o que você precisa</h1>
+        <p class="sub">Seja direto: quanto mais claro o pedido, mais rápido alguém aparece.</p>
+      </div>
+      <div style="padding:0 16px;">
+        <div class="field">
+          <label>Título do pedido</label>
+          <input id="fTitulo" placeholder="Ex: Ajuda para mudança de apartamento">
+        </div>
+        <div class="field">
+          <label>Categoria</label>
+          <div class="catgrid" id="catPickGrid"></div>
+        </div>
+        <div class="field">
+          <label>Detalhes</label>
+          <textarea id="fDesc" placeholder="Ex: Preciso descer 12 caixas e um sofá do 3º andar sem elevador, sábado de manhã."></textarea>
+        </div>
+        <div class="field">
+          <label>Bairro</label>
+          <input id="fBairro" placeholder="Ex: Vila Mariana">
+        </div>
+        <div class="field">
+          <label>Quanto você paga</label>
+          <div class="valwrap"><span>R$</span><input id="fPreco" type="number" placeholder="150"></div>
+        </div>
+        <button class="btn-amber" onclick="publicarPedido()"><span class="material-symbols-outlined">campaign</span>Publicar pedido</button>
+      </div>
+      <div style="height:14px"></div>
+    </div>
+
+    <!-- OFERECER -->
+    <div class="screen" id="screen-oferecer">
+      <div class="section-pad">
+        <p class="eyebrow">modo ajudante</p>
+        <h1 class="title">Ganhe uma renda extra</h1>
+        <p class="sub">Escolha o que você sabe fazer e o raio que topa se deslocar. A gente ordena os pedidos pra você.</p>
+      </div>
+      <div class="skillgrid" id="skillGrid"></div>
+      <div class="radius-box">
+        <div class="radius-row"><span>Raio de atuação</span><b id="raioVal">5 km</b></div>
+        <input type="range" min="1" max="20" value="5" id="raioSlider" oninput="updateRaio(this.value)">
+      </div>
+      <div class="feed" id="feedOferecer"></div>
+      <div style="height:8px"></div>
+    </div>
+
+    <!-- MENSAGENS -->
+    <div class="screen" id="screen-mensagens">
+      <div class="section-pad" style="padding-bottom:6px;">
+        <p class="eyebrow">contato</p>
+        <h1 class="title">Mensagens</h1>
+        <p class="sub" style="margin-bottom:12px;">Acompanhe suas conversas com vizinhos.</p>
+      </div>
+      <div class="searchbox">
+        <span class="material-symbols-outlined">search</span>
+        <input id="buscaConvo" placeholder="Buscar conversas..." oninput="renderConversas()">
+      </div>
+      <div class="convolist" id="listaConversas"></div>
+      <div id="emptyMsgs" class="empty" style="display:none;">
+        <span class="material-symbols-outlined">forum</span>
+        <b>Nenhuma conversa ainda</b>Toque em "Enviar proposta" ou "Quero ajudar" em um pedido pra começar.
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="screen" id="screen-chat">
+      <div id="chatview">
+        <div class="chat-head">
+          <button class="icon-btn" onclick="goTo('mensagens')"><span class="material-symbols-outlined">arrow_back</span></button>
+          <div class="avatar" id="chatAvatar">?</div>
+          <div>
+            <div class="convo-name" id="chatNome">—</div>
+            <div class="convo-tag" id="chatSub" style="margin:0;">—</div>
+          </div>
+        </div>
+        <div class="chat-msgs" id="chatMsgs"></div>
+        <div class="chat-input">
+          <input id="chatInputTxt" placeholder="Escreva sua mensagem..." onkeydown="if(event.key==='Enter')sendMsg()">
+          <button onclick="sendMsg()"><span class="material-symbols-outlined">send</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="screen" id="screen-perfil">
+      <div class="profile-hero">
+        <div class="profile-avatar" id="profileAvatar">M</div>
+        <div class="profile-name" id="profileNome">Matheus</div>
+        <div class="profile-loc">Vila Mariana, São Paulo</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num">12</div><div class="stat-lbl">Favores feitos</div></div>
+        <div class="stat-box"><div class="stat-num">4.9</div><div class="stat-lbl">Avaliação</div></div>
+        <div class="stat-box"><div class="stat-num">3</div><div class="stat-lbl">Pedidos ativos</div></div>
+      </div>
+      <div class="list-card">
+        <div class="list-item" onclick="showToast('Em breve')"><span class="material-symbols-outlined">receipt_long</span>Meus pedidos publicados<span class="material-symbols-outlined arrow">chevron_right</span></div>
+        <div class="list-item" onclick="showToast('Em breve')"><span class="material-symbols-outlined">volunteer_activism</span>Favores que já ajudei<span class="material-symbols-outlined arrow">chevron_right</span></div>
+        <div class="list-item" onclick="showToast('Em breve')"><span class="material-symbols-outlined">account_balance_wallet</span>Formas de recebimento<span class="material-symbols-outlined arrow">chevron_right</span></div>
+        <div class="list-item" onclick="showToast('Em breve')"><span class="material-symbols-outlined">settings</span>Configurações<span class="material-symbols-outlined arrow">chevron_right</span></div>
+      </div>
+      <div class="list-card" style="margin-top:12px;">
+        <div class="list-item" onclick="logout()" style="color:var(--error);"><span class="material-symbols-outlined" style="color:var(--error);">logout</span>Sair da conta</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="navbar">
+    <button class="navbtn active" id="nav-explorar" onclick="goTo('explorar')">
+      <span class="material-symbols-outlined">explore</span>Explorar
+    </button>
+    <button class="navbtn" id="nav-publicar" onclick="goTo('publicar')">
+      <span class="material-symbols-outlined">add_circle</span>Publicar
+    </button>
+    <button class="navbtn" id="nav-oferecer" onclick="goTo('oferecer')">
+      <span class="material-symbols-outlined">volunteer_activism</span>Oferecer
+    </button>
+    <button class="navbtn" id="nav-mensagens" onclick="goTo('mensagens')">
+      <span class="material-symbols-outlined">chat_bubble</span>Mensagens
+    </button>
+    <button class="navbtn" id="nav-perfil" onclick="goTo('perfil')">
+      <span class="material-symbols-outlined">person</span>Perfil
+    </button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ---------------- Categorias (ícones Material Symbols) ---------------- */
+const CATEGORIAS = [
+  {id:'mudanca', nome:'Mudança', icone:'local_shipping'},
+  {id:'faxina', nome:'Faxina', icone:'cleaning_services'},
+  {id:'reparos', nome:'Reparos', icone:'plumbing'},
+  {id:'eletrica', nome:'Elétrica', icone:'electrical_services'},
+  {id:'jardim', nome:'Jardim', icone:'yard'},
+  {id:'carro', nome:'Carro', icone:'directions_car'},
+  {id:'aulas', nome:'Aulas', icone:'school'},
+  {id:'pet', nome:'Pet', icone:'pets'},
+  {id:'moveis', nome:'Móveis', icone:'chair'},
+  {id:'compras', nome:'Compras', icone:'shopping_cart'},
+];
+const catById = id => CATEGORIAS.find(c=>c.id===id);
+const ic = (name, cls) => `<span class="material-symbols-outlined${cls?' '+cls:''}">${name}</span>`;
+function iniciais(nome){ return nome.trim().split(/\s+/).map(p=>p[0]).slice(0,2).join('').toUpperCase(); }
+
+/* Coordenadas aproximadas de bairros de São Paulo, em % dentro da área do mapa
+   (bbox: -46.685,-23.635 a -46.595,-23.545) */
+const BAIRRO_COORDS = {
+  'Vila Mariana': {lat:-23.5822, lon:-46.6343, x:56.3, y:41.3},
+  'Ibirapuera':   {lat:-23.5874, lon:-46.6576, x:30.4, y:47.1},
+  'Paraíso':      {lat:-23.5729, lon:-46.6417, x:48.1, y:31.0},
+  'Saúde':        {lat:-23.6103, lon:-46.6349, x:55.7, y:72.6},
+};
+const MAP_BBOX = '-46.685,-23.635,-46.595,-23.545';
+const YOU_LOC = BAIRRO_COORDS['Vila Mariana'];
+
+/* ---------------- Conexão com o backend (Render) ---------------- */
+const API_BASE = 'https://beta-app-favor-project-with-ai-1.onrender.com/api';
+let token = null;
+let meId = null;
+
+// Faz uma chamada à API. Tenta de novo automaticamente só se o servidor
+// estiver "dormindo" (plano gratuito do Render demora a acordar) — erros
+// de verdade (senha errada, etc.) aparecem na hora, sem ficar tentando à toa.
+async function apiFetch(path, opts = {}, tentativas = 2) {
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  let res;
+  try {
+    res = await fetch(API_BASE + path, Object.assign({}, opts, { headers }));
+  } catch (e) {
+    if (tentativas > 0) {
+      await new Promise((r) => setTimeout(r, 4000));
+      return apiFetch(path, opts, tentativas - 1);
+    }
+    throw new Error('Não foi possível conectar ao servidor.');
+  }
+  if (!res.ok) {
+    const erro = await res.json().catch(() => ({ erro: 'Erro na requisição' }));
+    throw new Error(erro.erro || 'Erro na requisição');
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+function aplicarSessao(data){
+  token = data.token;
+  meId = data.usuario.id;
+  user.nome = data.usuario.nome;
+  user.bairro = data.usuario.bairro + ', São Paulo';
+  user.skills = new Set(data.usuario.skills || []);
+  user.raio = data.usuario.raioPadrao || 5;
+  localStorage.setItem('favor_token', token);
+}
+
+function logout(){
+  localStorage.removeItem('favor_token');
+  token = null; meId = null;
+  pedidos = []; conversas = [];
+  document.getElementById('authScreen').style.display = 'flex';
+  goTo('explorar');
+}
+
+// Achata o formato que a API devolve pro formato que as telas já esperavam.
+function mapPedidoApi(p) {
+  return {
+    id: p.id, titulo: p.titulo, desc: p.desc, cat: p.cat, preco: p.preco,
+    bairro: p.bairro, quando: p.quando, dist: p.dist ?? 0,
+    autor: p.autor ? p.autor.nome : '—',
+    nota: p.autor ? p.autor.nota : 5,
+    verificado: p.autor ? p.autor.verificado : false,
+    membroDesde: p.autor ? p.autor.membroDesde : new Date().getFullYear(),
+  };
+}
+
+function mapConversaApi(c) {
+  return {
+    id: c.id,
+    pedidoId: c.pedidoId,
+    nome: c.com ? c.com.nome : '—',
+    pedidoTitulo: c.pedidoTitulo,
+    msgs: c.mensagens.map((m) => ({ de: m.de === meId ? 'me' : 'them', texto: m.texto })),
+  };
+}
+
+async function carregarPedidos() {
+  const bairroRef = (user.bairro || '').split(',')[0].trim() || 'Vila Mariana';
+  const lista = await apiFetch('/pedidos?bairro=' + encodeURIComponent(bairroRef));
+  pedidos = lista.map(mapPedidoApi);
+}
+
+async function carregarConversas() {
+  const lista = await apiFetch('/conversas');
+  conversas = lista.map(mapConversaApi);
+}
+
+let pedidos = [];
+let conversas = [];
+let convoAtiva = null;
+
+let user = { nome:'Matheus', bairro:'Vila Mariana, São Paulo', skills:new Set(['moveis','mudanca']), raio:5 };
+let pedidoAtual = null;
+
+/* ---------------- Navegação ---------------- */
+const NAV_MAP = { explorar:'explorar', detalhes:'explorar', proposta:'explorar', publicar:'publicar', oferecer:'oferecer', mensagens:'mensagens', chat:'mensagens', perfil:'perfil' };
+function goTo(tela){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+tela).classList.add('active');
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+  const nb = document.getElementById('nav-'+NAV_MAP[tela]);
+  if(nb) nb.classList.add('active');
+  document.getElementById('content').scrollTop = 0;
+}
+
+/* ---------------- Render: Explorar ---------------- */
+let filtroCategoria = null;
+let viewExplorar = 'lista';
+
+function renderFiltros(){
+  const row = document.getElementById('catFilterRow');
+  row.innerHTML = '';
+  const todos = document.createElement('button');
+  todos.className = 'chip' + (filtroCategoria===null ? ' active':'');
+  todos.innerHTML = ic('widgets')+'<span>Todos</span>';
+  todos.onclick = ()=>{ filtroCategoria=null; renderFiltros(); refreshExplorar(); };
+  row.appendChild(todos);
+  CATEGORIAS.forEach(c=>{
+    const el = document.createElement('button');
+    el.className = 'chip' + (filtroCategoria===c.id ? ' active':'');
+    el.innerHTML = ic(c.icone)+'<span>'+c.nome+'</span>';
+    el.onclick = ()=>{ filtroCategoria=c.id; renderFiltros(); refreshExplorar(); };
+    row.appendChild(el);
+  });
+}
+
+function ticketCard(p, actionLabel, actionFn){
+  const cat = catById(p.cat);
+  const div = document.createElement('div');
+  div.className = 'ticket';
+  div.innerHTML = `
+    <div class="ticket-main">
+      <div class="ticket-top">
+        <div class="cat-pill">${ic(cat.icone)}<span>${cat.nome}</span></div>
+        <div class="ticket-when">${ic('route')}${p.dist.toFixed(1)} km</div>
+      </div>
+      <div class="ticket-title">${p.titulo}</div>
+      <div class="ticket-meta">
+        <span>${ic('location_on')}${p.bairro}</span>
+      </div>
+      <div class="ticket-author">
+        <div class="mini-avatar">${iniciais(p.autor)}</div>
+        <span class="ticket-author-name">${p.autor}</span>
+        ${p.verificado ? '<span class="material-symbols-outlined verified-tag msf">verified</span>' : ''}
+      </div>
+    </div>
+    <div class="ticket-stub">
+      <div><span class="price-label">valor</span><span class="price-value">R$ ${p.preco}</span></div>
+      <button class="btn-sm">${actionLabel}</button>
+    </div>`;
+  div.querySelector('.btn-sm').onclick = (e)=>{ e.stopPropagation(); actionFn(p); };
+  div.onclick = ()=>abrirDetalhes(p);
+  return div;
+}
+
+function renderFeedExplorar(){
+  const feed = document.getElementById('feedExplorar');
+  feed.innerHTML = '';
+  let lista = pedidos.slice().sort((a,b)=>a.dist-b.dist);
+  if(filtroCategoria) lista = lista.filter(p=>p.cat===filtroCategoria);
+  if(lista.length===0){
+    feed.innerHTML = `<div class="empty">${ic('search_off')}<b>Nenhum pedido nessa categoria</b>Tente outro filtro ou publique você mesmo um pedido.</div>`;
+    return;
+  }
+  lista.forEach(p=> feed.appendChild(ticketCard(p, 'Propor', abrirProposta)));
+}
+
+/* ---------------- Render: Detalhes + Proposta ---------------- */
+function abrirDetalhes(p){
+  pedidoAtual = p;
+  const cat = catById(p.cat);
+  document.getElementById('detAvatar').textContent = iniciais(p.autor);
+  document.getElementById('detAutor').textContent = p.autor;
+  document.getElementById('detNota').textContent = p.nota.toFixed(1);
+  document.getElementById('detVerif').innerHTML = p.verificado
+    ? ic('verified_user','verif-ic')+'<span>Vizinho verificado</span>'
+    : '<span>Membro desde '+p.membroDesde+'</span>';
+  document.getElementById('detTitulo').textContent = p.titulo;
+  document.getElementById('detCatPill').innerHTML = ic(cat.icone)+'<span>'+cat.nome+'</span>';
+  document.getElementById('detPreco').textContent = 'R$ '+p.preco;
+  document.getElementById('detDesc').textContent = p.desc;
+  document.getElementById('detQuando').textContent = p.quando;
+  document.getElementById('detBairro').textContent = p.bairro+' · '+p.dist.toFixed(1)+' km de você';
+  goTo('detalhes');
+}
+
+function abrirProposta(p){
+  pedidoAtual = p;
+  document.getElementById('propTitulo').textContent = p.titulo;
+  document.getElementById('propLocal').textContent = p.bairro+', '+p.dist.toFixed(1)+' km';
+  document.getElementById('propPrecoOriginal').textContent = p.preco;
+  document.getElementById('propAvatar').textContent = iniciais(p.autor);
+  document.getElementById('propAutor').textContent = p.autor;
+  document.getElementById('propMembro').textContent = 'Membro desde '+p.membroDesde;
+  document.getElementById('propMsg').value = '';
+  document.getElementById('propMsg').placeholder = `Olá, ${p.autor}! Vi seu pedido e posso ajudar...`;
+  document.getElementById('propValor').value = p.preco;
+  goTo('proposta');
+}
+
+async function confirmarProposta(){
+  const p = pedidoAtual;
+  if(!p) return;
+  const valor = document.getElementById('propValor').value || p.preco;
+  const msgDigitada = document.getElementById('propMsg').value.trim();
+  const msg = msgDigitada || `Oi ${p.autor}! Vi seu pedido "${p.titulo}" e posso te ajudar. Ofereço R$${valor}. Podemos combinar os detalhes?`;
+  try{
+    await apiFetch(`/pedidos/${p.id}/propostas`, {
+      method: 'POST',
+      body: JSON.stringify({ valor, mensagem: msg }),
+    });
+    await carregarConversas();
+    showToast('Proposta enviada pra '+p.autor);
+    renderConversas();
+  }catch(e){
+    showToast('Não deu pra enviar a proposta: '+e.message);
+  }
+}
+
+/* ---------------- Render: Mapa ---------------- */
+let mapaCarregado = false;
+function setExplorarView(v){
+  viewExplorar = v;
+  document.getElementById('viewListBtn').classList.toggle('active', v==='lista');
+  document.getElementById('viewMapBtn').classList.toggle('active', v==='mapa');
+  document.getElementById('feedExplorar').style.display = v==='lista' ? 'flex' : 'none';
+  document.getElementById('mapWrap').style.display = v==='mapa' ? 'block' : 'none';
+  if(v==='mapa') renderMapa();
+}
+
+function coordPara(bairro){ return BAIRRO_COORDS[bairro] || YOU_LOC; }
+
+function renderMapa(){
+  if(!mapaCarregado){
+    document.getElementById('mapFrame').src = `https://www.openstreetmap.org/export/embed.html?bbox=${MAP_BBOX}&layer=mapnik`;
+    mapaCarregado = true;
+  }
+  document.getElementById('mapExternalLink').href = `https://www.google.com/maps/@${YOU_LOC.lat},${YOU_LOC.lon},14z`;
+
+  const wrap = document.getElementById('mapPins');
+  wrap.innerHTML = '';
+  const you = document.createElement('div');
+  you.className = 'pin pin-you';
+  you.style.left = YOU_LOC.x+'%'; you.style.top = YOU_LOC.y+'%';
+  you.innerHTML = `<div class="pin-body">${ic('person_pin_circle')}</div><div class="pin-tag">você</div>`;
+  wrap.appendChild(you);
+
+  let lista = pedidos.slice();
+  if(filtroCategoria) lista = lista.filter(p=>p.cat===filtroCategoria);
+  lista.forEach(p=>{
+    const c = coordPara(p.bairro);
+    const cat = catById(p.cat);
+    const pin = document.createElement('button');
+    pin.className = 'pin';
+    pin.style.left = c.x+'%'; pin.style.top = c.y+'%';
+    pin.innerHTML = `<div class="pin-body">${ic(cat.icone)}</div><div class="pin-tag">R$${p.preco}</div>`;
+    pin.onclick = ()=>selecionarPin(p);
+    wrap.appendChild(pin);
+  });
+  document.getElementById('mapSelected').style.display = 'none';
+}
+
+function selecionarPin(p){
+  const box = document.getElementById('mapSelected');
+  const cat = catById(p.cat);
+  box.style.display = 'flex';
+  box.innerHTML = `
+    <div class="mini-avatar" style="width:40px;height:40px;border-radius:10px;background:var(--primary-container);color:var(--on-primary-container);">${ic(cat.icone)}</div>
+    <div class="mapsel-body">
+      <div class="mapsel-title">${p.titulo}</div>
+      <div class="mapsel-meta">${p.bairro} · ${p.dist.toFixed(1)} km · <b>R$${p.preco}</b></div>
+    </div>
+    <button class="btn-sm" id="mapSelBtn">Ver</button>`;
+  document.getElementById('mapSelBtn').onclick = ()=>abrirDetalhes(p);
+}
+
+function refreshExplorar(){
+  renderFeedExplorar();
+  if(viewExplorar==='mapa') renderMapa();
+}
+
+/* ---------------- Render: Publicar ---------------- */
+let catSelecionada = null;
+function renderCatPickGrid(){
+  const grid = document.getElementById('catPickGrid');
+  grid.innerHTML = '';
+  CATEGORIAS.forEach(c=>{
+    const el = document.createElement('div');
+    el.className = 'catpick' + (catSelecionada===c.id ? ' sel':'');
+    el.innerHTML = ic(c.icone)+'<span>'+c.nome+'</span>';
+    el.onclick = ()=>{ catSelecionada=c.id; renderCatPickGrid(); };
+    grid.appendChild(el);
+  });
+}
+
+async function publicarPedido(){
+  const titulo = document.getElementById('fTitulo').value.trim();
+  const desc = document.getElementById('fDesc').value.trim();
+  const bairro = document.getElementById('fBairro').value.trim() || 'Vila Mariana';
+  const preco = parseFloat(document.getElementById('fPreco').value) || 0;
+  if(!titulo || !catSelecionada){
+    showToast('Preencha o título e escolha uma categoria');
+    return;
+  }
+  try{
+    await apiFetch('/pedidos', {
+      method: 'POST',
+      body: JSON.stringify({ titulo, desc, cat: catSelecionada, preco, bairro }),
+    });
+    document.getElementById('fTitulo').value='';
+    document.getElementById('fDesc').value='';
+    document.getElementById('fBairro').value='';
+    document.getElementById('fPreco').value='';
+    catSelecionada = null;
+    renderCatPickGrid();
+    await carregarPedidos();
+    showToast('Pedido publicado! Já apareceu no Explorar');
+    filtroCategoria = null; renderFiltros(); refreshExplorar(); renderFeedOferecer();
+    goTo('explorar');
+  }catch(e){
+    showToast('Não deu pra publicar: '+e.message);
+  }
+}
+
+/* ---------------- Render: Oferecer ---------------- */
+function renderSkillGrid(){
+  const grid = document.getElementById('skillGrid');
+  grid.innerHTML = '';
+  CATEGORIAS.forEach(c=>{
+    const el = document.createElement('button');
+    el.className = 'chip' + (user.skills.has(c.id) ? ' active':'');
+    el.innerHTML = ic(c.icone)+'<span>'+c.nome+'</span>';
+    el.onclick = ()=>{
+      user.skills.has(c.id) ? user.skills.delete(c.id) : user.skills.add(c.id);
+      renderSkillGrid(); renderFeedOferecer();
+    };
+    grid.appendChild(el);
+  });
+}
+
+function updateRaio(v){
+  user.raio = +v;
+  document.getElementById('raioVal').textContent = v+' km';
+  renderFeedOferecer();
+}
+
+function renderFeedOferecer(){
+  const feed = document.getElementById('feedOferecer');
+  feed.innerHTML = '';
+  let lista = pedidos.filter(p=>p.dist<=user.raio);
+  if(user.skills.size>0){
+    lista = lista.slice().sort((a,b)=>{
+      const am = user.skills.has(a.cat)?0:1, bm = user.skills.has(b.cat)?0:1;
+      return am-bm || a.dist-b.dist;
+    });
+  } else {
+    lista = lista.slice().sort((a,b)=>a.dist-b.dist);
+  }
+  if(lista.length===0){
+    feed.innerHTML = `<div class="empty">${ic('travel_explore')}<b>Nada por perto ainda</b>Aumente o raio de atuação pra ver mais pedidos disponíveis.</div>`;
+    return;
+  }
+  lista.forEach(p=> feed.appendChild(ticketCard(p, 'Quero ajudar', abrirOfertaAjuda)));
+}
+
+async function abrirOfertaAjuda(p){
+  const msg = `Oi ${p.autor}! Vi seu pedido "${p.titulo}" — tenho experiência com isso e queria ajudar. Bora combinar?`;
+  try{
+    await apiFetch(`/pedidos/${p.id}/propostas`, {
+      method: 'POST',
+      body: JSON.stringify({ valor: p.preco, mensagem: msg }),
+    });
+    await carregarConversas();
+    showToast('Você se ofereceu pro pedido de '+p.autor);
+    const c = conversas.find(c=>c.pedidoId===p.id);
+    if(c){ abrirChat(c.id); } else { renderConversas(); }
+  }catch(e){
+    showToast('Não deu pra enviar a oferta: '+e.message);
+  }
+}
+
+/* ---------------- Mensagens ---------------- */
+
+function renderConversas(){
+  const wrap = document.getElementById('listaConversas');
+  const empty = document.getElementById('emptyMsgs');
+  const busca = (document.getElementById('buscaConvo').value||'').trim().toLowerCase();
+  wrap.innerHTML = '';
+  if(conversas.length===0){ empty.style.display='flex'; return; }
+  const filtradas = conversas.filter(c=> !busca || c.nome.toLowerCase().includes(busca) || c.pedidoTitulo.toLowerCase().includes(busca));
+  if(filtradas.length===0){
+    empty.style.display='flex';
+    empty.innerHTML = `${ic('search_off')}<b>Nada encontrado</b>Tente buscar por outro nome ou pedido.`;
+    return;
+  }
+  empty.style.display='none';
+  filtradas.forEach(c=>{
+    const last = c.msgs[c.msgs.length-1];
+    const el = document.createElement('div');
+    el.className = 'convo';
+    el.innerHTML = `
+      <div class="avatar">${iniciais(c.nome)}</div>
+      <div class="convo-body">
+        <div class="convo-top"><div class="convo-name">${c.nome}</div></div>
+        <div class="convo-tag">Serviço: ${c.pedidoTitulo}</div>
+        <div class="convo-last">${last.texto}</div>
+      </div>`;
+    el.onclick = ()=>abrirChat(c.id);
+    wrap.appendChild(el);
+  });
+}
+
+function abrirChat(id){
+  convoAtiva = id;
+  const c = conversas.find(x=>x.id===id);
+  document.getElementById('chatAvatar').textContent = iniciais(c.nome);
+  document.getElementById('chatNome').textContent = c.nome;
+  document.getElementById('chatSub').textContent = 'Serviço: '+c.pedidoTitulo;
+  renderChatMsgs();
+  goTo('chat');
+}
+
+function renderChatMsgs(){
+  const c = conversas.find(x=>x.id===convoAtiva);
+  const wrap = document.getElementById('chatMsgs');
+  wrap.innerHTML = '';
+  c.msgs.forEach(m=>{
+    const b = document.createElement('div');
+    b.className = 'bubble '+(m.de==='me'?'me':'them');
+    b.textContent = m.texto;
+    wrap.appendChild(b);
+  });
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+async function sendMsg(){
+  const input = document.getElementById('chatInputTxt');
+  const texto = input.value.trim();
+  if(!texto) return;
+  input.value='';
+  try{
+    await apiFetch(`/conversas/${convoAtiva}/mensagens`, {
+      method: 'POST',
+      body: JSON.stringify({ texto }),
+    });
+    await carregarConversas();
+    renderChatMsgs();
+    renderConversas();
+  }catch(e){
+    showToast('Não deu pra enviar a mensagem: '+e.message);
+  }
+}
+
+/* ---------------- Perfil ---------------- */
+document.getElementById('profileAvatar').textContent = iniciais(user.nome);
+document.getElementById('profileNome').textContent = user.nome;
+document.getElementById('topAvatar').textContent = iniciais(user.nome)[0];
+
+/* ---------------- Toast ---------------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ---------------- Autenticação (login / cadastro) ---------------- */
+let authMode = 'login';
+
+function toggleAuthMode(){
+  authMode = authMode === 'login' ? 'cadastro' : 'login';
+  const cadastro = authMode === 'cadastro';
+  document.getElementById('authFieldNome').style.display = cadastro ? 'block' : 'none';
+  document.getElementById('authFieldBairro').style.display = cadastro ? 'block' : 'none';
+  document.getElementById('authTitulo').textContent = cadastro ? 'Criar conta' : 'Entrar';
+  document.getElementById('authSub').textContent = cadastro
+    ? 'Cadastre-se pra publicar pedidos e ajudar seus vizinhos.'
+    : 'Entre pra ver os pedidos perto de você.';
+  document.getElementById('authBtnTxt').textContent = cadastro ? 'Criar conta' : 'Entrar';
+  document.getElementById('authToggleBtn').textContent = cadastro ? 'Já tem conta? Entrar' : 'Não tem conta? Cadastre-se';
+  document.getElementById('authErro').style.display = 'none';
+}
+
+async function submitAuth(){
+  const email = document.getElementById('authEmail').value.trim();
+  const senha = document.getElementById('authSenha').value;
+  const erroEl = document.getElementById('authErro');
+  erroEl.style.display = 'none';
+  if(!email || !senha){ erroEl.textContent = 'Preencha email e senha.'; erroEl.style.display='block'; return; }
+
+  const btn = document.getElementById('authBtn');
+  btn.disabled = true;
+  const txtOriginal = document.getElementById('authBtnTxt').textContent;
+  document.getElementById('authBtnTxt').textContent = 'Aguarde...';
+
+  try{
+    let data;
+    if(authMode === 'cadastro'){
+      const nome = document.getElementById('authNome').value.trim();
+      const bairro = document.getElementById('authBairro').value.trim() || 'Vila Mariana';
+      if(!nome){ throw new Error('Preencha seu nome.'); }
+      data = await apiFetch('/auth/registrar', { method:'POST', body: JSON.stringify({ nome, email, senha, bairro }) });
+    } else {
+      data = await apiFetch('/auth/login', { method:'POST', body: JSON.stringify({ email, senha }) });
+    }
+    aplicarSessao(data);
+    showToast('Bem-vindo(a), '+data.usuario.nome+'!');
+    await iniciarApp();
+  }catch(e){
+    erroEl.textContent = e.message || 'Não foi possível entrar.';
+    erroEl.style.display = 'block';
+  }finally{
+    btn.disabled = false;
+    document.getElementById('authBtnTxt').textContent = txtOriginal;
+  }
+}
+
+/* ---------------- Init ---------------- */
+async function iniciarApp(){
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('profileAvatar').textContent = iniciais(user.nome);
+  document.getElementById('profileNome').textContent = user.nome;
+  document.getElementById('topAvatar').textContent = iniciais(user.nome)[0];
+  try{
+    await Promise.all([carregarPedidos(), carregarConversas()]);
+  }catch(e){
+    console.error(e);
+    showToast('Não foi possível carregar seus dados agora.');
+  }
+  renderFiltros();
+  renderFeedExplorar();
+  renderCatPickGrid();
+  renderSkillGrid();
+  renderFeedOferecer();
+  renderConversas();
+}
+
+async function init(){
+  renderCatPickGrid();
+  renderSkillGrid();
+  const tokenSalvo = localStorage.getItem('favor_token');
+  if(tokenSalvo){
+    token = tokenSalvo;
+    try{
+      const me = await apiFetch('/usuarios/me');
+      meId = me.id;
+      user.nome = me.nome;
+      user.bairro = me.bairro + ', São Paulo';
+      user.skills = new Set(me.skills || []);
+      user.raio = me.raioPadrao || 5;
+      await iniciarApp();
+      return;
+    }catch(e){
+      localStorage.removeItem('favor_token');
+      token = null;
+    }
+  }
+  document.getElementById('authScreen').style.display = 'flex';
+}
+init();
+</script>
+</body>
+</html>
