@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Favor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-container": "#edeef0", "on-secondary-fixed": "#2a1700", "secondary": "#855300",
+        "on-background": "#191c1e", "on-primary": "#ffffff", "on-secondary-container": "#684000",
+        "on-tertiary": "#ffffff", "inverse-surface": "#2e3132", "on-error-container": "#93000a",
+        "tertiary": "#006242", "surface-dim": "#d9dadc", "on-tertiary-fixed-variant": "#005236",
+        "surface-bright": "#f8f9fb", "tertiary-fixed-dim": "#4edea3", "tertiary-container": "#007d55",
+        "surface": "#f8f9fb", "surface-variant": "#e1e2e4", "inverse-primary": "#b4c5ff",
+        "on-secondary-fixed-variant": "#653e00", "on-tertiary-container": "#bdffdb",
+        "surface-container-low": "#f3f4f6", "error-container": "#ffdad6", "outline-variant": "#c3c6d7",
+        "error": "#ba1a1a", "on-primary-fixed-variant": "#003ea8", "primary-fixed": "#dbe1ff",
+        "on-primary-container": "#eeefff", "outline": "#737686", "tertiary-fixed": "#6ffbbe",
+        "on-tertiary-fixed": "#002113", "surface-container-lowest": "#ffffff", "on-error": "#ffffff",
+        "background": "#f8f9fb", "on-primary-fixed": "#00174b", "inverse-on-surface": "#f0f1f3",
+        "secondary-fixed-dim": "#ffb95f", "secondary-container": "#fea619", "primary-container": "#2563eb",
+        "on-secondary": "#ffffff", "surface-container-highest": "#e1e2e4", "surface-tint": "#0053db",
+        "primary": "#004ac6", "on-surface-variant": "#434655", "primary-fixed-dim": "#b4c5ff",
+        "secondary-fixed": "#ffddb8", "surface-container-high": "#e7e8ea", "on-surface": "#191c1e"
+      },
+      borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+      spacing: { gutter: "20px", "margin-mobile": "16px", xs: "8px", sm: "16px", lg: "40px", base: "4px", "max-width": "1280px", "margin-desktop": "auto", md: "24px", xl: "64px" },
+      fontSize: {
+        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }],
+        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+        "headline-lg-mobile": ["24px", { lineHeight: "32px", fontWeight: "600" }]
+      }
+    }
+  }
+}
+</script>
+<style>
+  body{font-family:'Inter',sans-serif;min-height:100dvh}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;font-size:24px;line-height:1;vertical-align:middle}
+  .material-symbols-outlined.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+  .hide-scrollbar::-webkit-scrollbar{display:none}
+  .hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+  .screen{display:none !important}
+  .screen.active{display:block !important}
+  input[type=range]{-webkit-appearance:none;width:100%;background:transparent}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:20px;width:20px;border-radius:50%;background:#004ac6;cursor:pointer;margin-top:-8px;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+  input[type=range]::-webkit-slider-runnable-track{width:100%;height:4px;background:#e1e2e4;border-radius:2px}
+  #toast{transition:opacity .25s}
+</style>
+</head>
+<body class="bg-background text-on-background antialiased pb-24">
+
+<!-- ===== HEADER: brand (main tabs) ===== -->
+<header id="main-header" class="hidden bg-surface shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-12 md:px-margin-desktop md:max-w-max-width md:left-1/2 md:-translate-x-1/2" style="padding-top:env(safe-area-inset-top,0)">
+  <div class="flex items-center gap-xs">
+    <span class="material-symbols-outlined text-primary">handshake</span>
+    <h1 class="text-headline-md font-bold text-primary">Favor</h1>
+  </div>
+  <button onclick="showScreen('perfil')" class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden flex items-center justify-center text-on-surface-variant">
+    <span class="material-symbols-outlined text-[20px]">person</span>
+  </button>
+</header>
+
+<!-- ===== HEADER: back button (detail screens) ===== -->
+<header id="detail-header" class="hidden bg-surface shadow-sm fixed top-0 w-full z-50" style="padding-top:env(safe-area-inset-top,0)">
+  <div class="flex justify-between items-center w-full px-margin-mobile h-12 md:px-margin-desktop md:max-w-max-width md:mx-auto">
+    <button onclick="goBack()" aria-label="Voltar" class="text-on-surface-variant p-2 -ml-2 rounded-full active:bg-surface-variant/50">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <h1 id="detail-header-title" class="text-headline-md text-on-surface font-semibold flex-1 text-center pr-8">Detalhes</h1>
+  </div>
+</header>
+
+<!-- ===================== AUTH ===================== -->
+<section data-screen="auth" class="screen active min-h-screen flex items-center justify-center px-margin-mobile">
+  <div class="w-full max-w-[420px] py-lg">
+    <div class="flex items-center gap-xs mb-md">
+      <span class="material-symbols-outlined text-primary text-[32px]">handshake</span>
+      <h1 class="text-headline-lg text-primary font-bold">Favor</h1>
+    </div>
+
+    <div id="login-form-wrap">
+      <p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Bem-vindo</p>
+      <h2 class="text-headline-lg mb-xs">Entrar</h2>
+      <p class="text-on-surface-variant mb-md">Entre pra ver os pedidos perto de você.</p>
+      <form id="login-form" class="flex flex-col gap-sm" onsubmit="return handleLogin(event)">
+        <div>
+          <label class="text-label-md block mb-1">Email</label>
+          <input required type="email" id="login-email" placeholder="voce@exemplo.com" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <div>
+          <label class="text-label-md block mb-1">Senha</label>
+          <input required type="password" id="login-senha" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <p id="login-error" class="text-error text-label-sm hidden"></p>
+        <button type="submit" id="login-btn" class="bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg mt-xs flex items-center justify-center gap-2 active:scale-[.98] transition-transform">
+          <span class="material-symbols-outlined text-[20px]">login</span> Entrar
+        </button>
+      </form>
+      <p class="text-center mt-md text-label-md">Não tem conta? <button type="button" onclick="toggleAuth('cadastro')" class="text-primary font-bold">Cadastre-se</button></p>
+    </div>
+
+    <div id="cadastro-form-wrap" class="hidden">
+      <p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Bem-vindo</p>
+      <h2 class="text-headline-lg mb-xs">Criar conta</h2>
+      <p class="text-on-surface-variant mb-md">Leva menos de um minuto.</p>
+      <form id="cadastro-form" class="flex flex-col gap-sm" onsubmit="return handleCadastro(event)">
+        <div class="flex items-center gap-3">
+          <div id="cadastro-foto-preview" class="w-14 h-14 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant overflow-hidden shrink-0">
+            <span class="material-symbols-outlined">add_a_photo</span>
+          </div>
+          <label class="text-label-md text-primary font-bold cursor-pointer">
+            Adicionar foto
+            <input type="file" id="cadastro-foto" accept="image/*" class="hidden" onchange="previewFoto(event)"/>
+          </label>
+        </div>
+        <div>
+          <label class="text-label-md block mb-1">Seu nome</label>
+          <input required id="cadastro-nome" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <div>
+          <label class="text-label-md block mb-1">Email</label>
+          <input required type="email" id="cadastro-email" placeholder="voce@exemplo.com" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <div>
+          <label class="text-label-md block mb-1">Senha</label>
+          <input required type="password" id="cadastro-senha" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <div>
+          <label class="text-label-md block mb-1">Bairro</label>
+          <input required id="cadastro-bairro" placeholder="Ex: Vila Mariana" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <p id="cadastro-error" class="text-error text-label-sm hidden"></p>
+        <button type="submit" id="cadastro-btn" class="bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg mt-xs active:scale-[.98] transition-transform">Criar conta</button>
+      </form>
+      <p class="text-center mt-md text-label-md">Já tem conta? <button type="button" onclick="toggleAuth('login')" class="text-primary font-bold">Entrar</button></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== EXPLORAR ===================== -->
+<section data-screen="explorar" class="screen">
+  <main class="pt-16 px-margin-mobile md:px-margin-desktop md:max-w-max-width mx-auto">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-sm mb-sm mt-sm">
+      <div>
+        <h2 class="text-headline-lg-mobile md:text-headline-lg mb-1">Explorar Pedidos</h2>
+        <div class="flex items-center text-on-surface-variant gap-xs">
+          <span class="material-symbols-outlined text-[18px]">location_on</span>
+          <span class="text-sm">Perto de <span id="explorar-bairro" class="font-bold text-primary">você</span></span>
+        </div>
+      </div>
+      <div class="flex bg-surface-container-low rounded-lg p-1 w-max">
+        <button id="view-list-btn" onclick="setExplorarView('list')" class="px-sm py-xs bg-white shadow-sm rounded flex items-center gap-xs text-primary text-label-md">
+          <span class="material-symbols-outlined text-[18px]">list</span> Lista
+        </button>
+        <button id="view-map-btn" onclick="setExplorarView('mapa')" class="px-sm py-xs rounded flex items-center gap-xs text-on-surface-variant text-label-md">
+          <span class="material-symbols-outlined text-[18px]">map</span> Mapa
+        </button>
+      </div>
+    </div>
+
+    <div class="flex overflow-x-auto hide-scrollbar gap-sm pb-xs mb-md" id="categoria-chips"></div>
+
+    <div id="explorar-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md pb-md"></div>
+    <div id="explorar-map-wrap" class="hidden pb-md">
+      <iframe id="explorar-map-iframe" class="w-full h-[60vh] rounded-xl" style="border:0" loading="lazy"></iframe>
+    </div>
+  </main>
+</section>
+
+<!-- ===================== DETALHES ===================== -->
+<section data-screen="detalhes" class="screen">
+  <main class="pt-16 pb-28 px-margin-mobile md:px-margin-desktop md:max-w-[800px] mx-auto space-y-4">
+    <section class="flex items-center gap-4 bg-surface p-md rounded-xl shadow-sm border border-surface-container-low mt-sm">
+      <div id="detalhes-autor-foto" class="w-16 h-16 rounded-full bg-surface-variant flex items-center justify-center text-headline-md text-on-surface-variant overflow-hidden shrink-0"></div>
+      <div class="flex-1">
+        <h2 id="detalhes-autor-nome" class="text-headline-md"></h2>
+        <div class="flex items-center gap-1 text-on-surface-variant text-label-md mt-1">
+          <span class="material-symbols-outlined text-secondary-container fill text-[16px]">star</span>
+          <span id="detalhes-autor-rating">—</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-surface p-md rounded-xl shadow-sm border border-surface-container-low space-y-4">
+      <div class="flex justify-between items-start gap-4">
+        <div>
+          <h1 id="detalhes-titulo" class="text-headline-lg-mobile md:text-headline-lg mb-2"></h1>
+          <div class="inline-flex items-center bg-primary/10 text-primary px-3 py-1 rounded-full text-label-md">
+            <span id="detalhes-categoria-icon" class="material-symbols-outlined mr-1 text-[18px]">inventory_2</span>
+            <span id="detalhes-categoria"></span>
+          </div>
+        </div>
+        <div class="bg-secondary-container/10 text-secondary-container px-4 py-2 rounded-lg text-center shrink-0">
+          <span class="block text-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Valor</span>
+          <span id="detalhes-valor" class="text-headline-md font-bold"></span>
+        </div>
+      </div>
+      <hr class="border-surface-container-high"/>
+      <div class="space-y-4 text-on-surface-variant">
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-outline mt-0.5">description</span>
+          <p id="detalhes-descricao" class="leading-relaxed"></p>
+        </div>
+        <div id="detalhes-data-wrap" class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-outline">calendar_month</span>
+          <span id="detalhes-data"></span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-outline mt-0.5">location_on</span>
+          <div class="w-full">
+            <span id="detalhes-bairro" class="block mb-2 text-on-surface font-medium"></span>
+            <div class="w-full h-40 rounded-lg overflow-hidden border border-surface-container-high">
+              <iframe id="detalhes-map-iframe" class="w-full h-full" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-tertiary-container/10 border border-tertiary-container/20 p-sm rounded-lg flex items-center gap-3">
+      <span class="material-symbols-outlined text-tertiary-container text-[28px]">shield</span>
+      <div>
+        <h3 class="text-label-md text-tertiary-container font-semibold">Pagamento Protegido pelo Favor</h3>
+        <p class="text-label-sm text-tertiary-container/80 mt-1">O valor só é liberado pra quem ajudar após a conclusão do serviço.</p>
+      </div>
+    </section>
+  </main>
+  <div class="fixed bottom-0 left-0 w-full bg-surface border-t border-surface-container-high p-4 shadow-[0_-4px_12px_rgba(0,0,0,.05)] z-40" style="padding-bottom:max(16px,env(safe-area-inset-bottom))">
+    <div class="max-w-[800px] mx-auto">
+      <button onclick="goToProposta()" class="w-full bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg flex justify-center items-center gap-2">
+        <span class="material-symbols-outlined">campaign</span> Enviar Proposta
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROPOSTA ===================== -->
+<section data-screen="proposta" class="screen">
+  <main class="pt-16 pb-28 px-margin-mobile md:max-w-[600px] mx-auto">
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-md mb-md mt-sm border border-surface-container-high/50">
+      <div class="flex items-start justify-between mb-sm">
+        <div>
+          <h2 id="proposta-titulo" class="text-body-lg font-semibold mb-1"></h2>
+          <div class="flex items-center gap-2 text-on-surface-variant">
+            <span class="material-symbols-outlined text-[18px]">location_on</span>
+            <span id="proposta-local" class="text-label-md"></span>
+          </div>
+        </div>
+        <div class="bg-secondary-container/10 text-secondary-container px-3 py-1 rounded-full flex flex-col items-center justify-center">
+          <span class="text-label-sm font-bold">R$</span>
+          <span id="proposta-valor-orig" class="text-body-md font-bold"></span>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 pt-sm border-t border-surface-variant">
+        <div id="proposta-autor-foto" class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden"></div>
+        <p id="proposta-autor-nome" class="text-label-md"></p>
+      </div>
+    </div>
+    <form id="proposta-form" class="flex flex-col gap-md" onsubmit="return handleProposta(event)">
+      <div>
+        <label class="text-label-md block mb-1" for="proposta-mensagem">Sua mensagem</label>
+        <textarea id="proposta-mensagem" rows="4" placeholder="Olá! Vi seu pedido e posso ajudar..." class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm resize-none"></textarea>
+        <p class="text-label-sm text-on-surface-variant mt-1">Apresente-se e diga por que você é a pessoa ideal.</p>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1" for="proposta-valor">Valor da sua oferta</label>
+        <div class="relative">
+          <span class="absolute left-sm top-1/2 -translate-y-1/2 font-semibold text-on-surface-variant">R$</span>
+          <input id="proposta-valor" type="number" class="w-full pl-[40px] pr-sm py-sm bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-semibold"/>
+        </div>
+      </div>
+      <div class="bg-primary/5 rounded-xl p-sm flex items-start gap-3">
+        <span class="material-symbols-outlined text-primary mt-0.5">security</span>
+        <div>
+          <h3 class="text-label-md text-primary font-semibold mb-1">Pagamento Seguro Favor</h3>
+          <p class="text-label-sm text-on-surface-variant leading-relaxed">O valor fica retido na plataforma até a conclusão do favor.</p>
+        </div>
+      </div>
+    </form>
+  </main>
+  <div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-surface-variant p-margin-mobile shadow-[0_-4px_12px_rgba(0,0,0,.05)] z-40" style="padding-bottom:max(16px,env(safe-area-inset-bottom))">
+    <button onclick="document.getElementById('proposta-form').requestSubmit()" class="w-full max-w-[600px] mx-auto block bg-secondary-container text-on-secondary-container font-bold py-[14px] rounded-lg active:scale-[.98] transition-transform">Confirmar e Enviar</button>
+  </div>
+</section>
+
+<!-- ===================== PUBLICAR ===================== -->
+<section data-screen="publicar" class="screen">
+  <main class="pt-20 pb-28 px-margin-mobile md:max-w-[600px] mx-auto">
+    <h2 class="text-headline-lg-mobile mb-1">Descreva o que você precisa</h2>
+    <p class="text-on-surface-variant mb-md">Seja direto: quanto mais claro, mais rápido alguém aparece.</p>
+    <form id="publicar-form" class="flex flex-col gap-md" onsubmit="return handlePublicar(event)">
+      <div>
+        <label class="text-label-md block mb-1">Título do pedido</label>
+        <input required id="publicar-titulo" placeholder="Ex: Ajuda para montar guarda-roupa" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1">Categoria</label>
+        <div id="publicar-categorias" class="flex flex-wrap gap-2"></div>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1">Detalhes</label>
+        <textarea required id="publicar-detalhes" rows="4" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm resize-none"></textarea>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1">Bairro</label>
+        <input required id="publicar-bairro" placeholder="Ex: Vila Mariana" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1">Quanto você paga</label>
+        <div class="relative">
+          <span class="absolute left-sm top-1/2 -translate-y-1/2 font-semibold text-on-surface-variant">R$</span>
+          <input required id="publicar-valor" type="number" min="1" class="w-full pl-[40px] pr-sm py-sm bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-semibold"/>
+        </div>
+      </div>
+      <button type="submit" class="bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg flex justify-center items-center gap-2 active:scale-[.98] transition-transform">
+        <span class="material-symbols-outlined">campaign</span> Publicar pedido
+      </button>
+    </form>
+  </main>
+</section>
+
+<!-- ===================== OFERECER ===================== -->
+<section data-screen="oferecer" class="screen">
+  <main class="pt-20 pb-28 px-margin-mobile md:px-margin-desktop md:max-w-max-width mx-auto">
+    <h2 class="text-headline-lg-mobile mb-1">Ganhe uma renda extra</h2>
+    <p class="text-on-surface-variant mb-md">Escolha o que você sabe fazer e o raio que topa se deslocar.</p>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-md">
+      <aside class="md:col-span-4 lg:col-span-3 space-y-sm">
+        <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant/50">
+          <h3 class="text-label-md mb-2">O que você sabe fazer?</h3>
+          <div id="oferecer-categorias" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant/50">
+          <div class="flex justify-between items-center mb-1">
+            <h3 class="text-label-md flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">location_on</span> Raio de atuação</h3>
+            <span id="oferecer-raio-valor" class="text-primary font-bold text-label-md">5 km</span>
+          </div>
+          <input type="range" min="1" max="20" value="5" id="oferecer-raio" oninput="document.getElementById('oferecer-raio-valor').textContent = this.value + ' km'"/>
+          <div class="flex justify-between text-[10px] text-on-surface-variant mt-2">
+            <span>1 km</span><span>20 km</span>
+          </div>
+        </div>
+      </aside>
+      <div class="md:col-span-8 lg:col-span-9 space-y-sm">
+        <div id="oferecer-list" class="grid grid-cols-1 lg:grid-cols-2 gap-sm"></div>
+      </div>
+    </div>
+  </main>
+</section>
+
+<!-- ===================== MENSAGENS ===================== -->
+<section data-screen="mensagens" class="screen">
+  <main class="pt-20 pb-28 px-margin-mobile md:max-w-max-width mx-auto">
+    <h2 class="text-headline-lg-mobile mb-md">Mensagens</h2>
+    <div class="flex flex-col items-center justify-center text-center py-20 text-on-surface-variant">
+      <span class="material-symbols-outlined text-[40px] mb-2">forum</span>
+      <p class="font-semibold text-on-surface">Nenhuma conversa ainda</p>
+      <p class="text-label-md mt-1 max-w-[280px]">Toque em "Enviar proposta" ou "Oferecer ajuda" em um pedido pra começar.</p>
+    </div>
+  </main>
+</section>
+
+<!-- ===================== PERFIL ===================== -->
+<section data-screen="perfil" class="screen">
+  <main class="pt-20 pb-28 px-margin-mobile md:max-w-[600px] mx-auto">
+    <div class="flex items-center gap-4 mb-md">
+      <div id="perfil-foto" class="w-16 h-16 rounded-full bg-surface-variant flex items-center justify-center text-headline-md text-on-surface-variant overflow-hidden"></div>
+      <div>
+        <h2 id="perfil-nome" class="text-headline-md"></h2>
+        <p id="perfil-bairro" class="text-on-surface-variant text-label-md"></p>
+      </div>
+    </div>
+    <div class="grid grid-cols-3 gap-2 mb-md text-center">
+      <div class="bg-surface-container-lowest rounded-xl p-sm shadow-sm border border-surface-variant/50">
+        <p id="perfil-favores-feitos" class="text-headline-md font-bold text-primary">0</p>
+        <p class="text-label-sm text-on-surface-variant">Favores feitos</p>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-sm shadow-sm border border-surface-variant/50">
+        <p id="perfil-avaliacao" class="text-headline-md font-bold text-primary">—</p>
+        <p class="text-label-sm text-on-surface-variant">Avaliação</p>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-sm shadow-sm border border-surface-variant/50">
+        <p id="perfil-pedidos-ativos" class="text-headline-md font-bold text-primary">0</p>
+        <p class="text-label-sm text-on-surface-variant">Pedidos ativos</p>
+      </div>
+    </div>
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant/50 divide-y divide-surface-variant/50">
+      <button class="w-full flex items-center justify-between p-sm text-left"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-on-surface-variant">receipt_long</span> Meus pedidos publicados</span><span class="material-symbols-outlined text-on-surface-variant">chevron_right</span></button>
+      <button class="w-full flex items-center justify-between p-sm text-left"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-on-surface-variant">volunteer_activism</span> Favores que já ajudei</span><span class="material-symbols-outlined text-on-surface-variant">chevron_right</span></button>
+      <button class="w-full flex items-center justify-between p-sm text-left"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-on-surface-variant">account_balance_wallet</span> Formas de recebimento</span><span class="material-symbols-outlined text-on-surface-variant">chevron_right</span></button>
+      <button class="w-full flex items-center justify-between p-sm text-left"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-on-surface-variant">settings</span> Configurações</span><span class="material-symbols-outlined text-on-surface-variant">chevron_right</span></button>
+      <button onclick="handleLogout()" class="w-full flex items-center gap-3 p-sm text-left text-error"><span class="material-symbols-outlined">logout</span> Sair da conta</button>
+    </div>
+  </main>
+</section>
+
+<!-- ===================== BOTTOM NAV ===================== -->
+<nav id="bottom-nav" class="hidden md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container-lowest shadow-[0_-4px_12px_rgba(0,0,0,.05)] rounded-t-xl" style="padding-bottom:max(8px,env(safe-area-inset-bottom))">
+  <a href="javascript:void(0)" onclick="showScreen('explorar')" data-nav="explorar" class="nav-item flex flex-col items-center px-3 py-1 rounded-xl text-on-surface-variant">
+    <span class="material-symbols-outlined">explore</span><span class="text-label-sm">Explorar</span>
+  </a>
+  <a href="javascript:void(0)" onclick="showScreen('publicar')" data-nav="publicar" class="nav-item flex flex-col items-center px-3 py-1 rounded-xl text-on-surface-variant">
+    <span class="material-symbols-outlined">add_circle</span><span class="text-label-sm">Publicar</span>
+  </a>
+  <a href="javascript:void(0)" onclick="showScreen('oferecer')" data-nav="oferecer" class="nav-item flex flex-col items-center px-3 py-1 rounded-xl text-on-surface-variant">
+    <span class="material-symbols-outlined">volunteer_activism</span><span class="text-label-sm">Oferecer</span>
+  </a>
+  <a href="javascript:void(0)" onclick="showScreen('mensagens')" data-nav="mensagens" class="nav-item flex flex-col items-center px-3 py-1 rounded-xl text-on-surface-variant">
+    <span class="material-symbols-outlined">chat_bubble</span><span class="text-label-sm">Mensagens</span>
+  </a>
+  <a href="javascript:void(0)" onclick="showScreen('perfil')" data-nav="perfil" class="nav-item flex flex-col items-center px-3 py-1 rounded-xl text-on-surface-variant">
+    <span class="material-symbols-outlined">person</span><span class="text-label-sm">Perfil</span>
+  </a>
+</nav>
+
+<div id="toast" class="hidden fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 bg-on-background text-white px-4 py-2 rounded-lg text-label-md z-[60] opacity-0"></div>
+
+<script>
+/* ======================= CONFIG =======================
+   Ajuste ENDPOINTS aqui se as rotas do seu backend
+   tiverem nomes diferentes destes. */
+const API_BASE = 'https://beta-app-favor-project-with-ai-1.onrender.com';
+const ENDPOINTS = { login: '/api/auth/login', register: '/api/auth/register', favors: '/api/favors' };
+
+const CATEGORIAS = [
+  { nome: 'Mudança', icon: 'local_shipping' },
+  { nome: 'Faxina', icon: 'cleaning_services' },
+  { nome: 'Reparos', icon: 'plumbing' },
+  { nome: 'Pets', icon: 'pets' },
+  { nome: 'Aulas', icon: 'school' },
+  { nome: 'Montagem', icon: 'construction' },
+];
+
+let state = { user: null, favores: [], favorAtual: null, telaAnterior: 'explorar' };
+let categoriaFiltro = 'Todos';
+let publicarCategoriaEscolhida = CATEGORIAS[0].nome;
+
+/* ======================= NAVEGAÇÃO ======================= */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelector('[data-screen="' + id + '"]').classList.add('active');
+
+  const isAuth = id === 'auth';
+  const isDetail = id === 'detalhes' || id === 'proposta';
+  document.getElementById('main-header').classList.toggle('hidden', isAuth || isDetail);
+  document.getElementById('detail-header').classList.toggle('hidden', !isDetail);
+  document.getElementById('bottom-nav').classList.toggle('hidden', isAuth || isDetail);
+
+  if (id === 'detalhes') document.getElementById('detail-header-title').textContent = 'Detalhes do Pedido';
+  if (id === 'proposta') document.getElementById('detail-header-title').textContent = 'Enviar Proposta';
+
+  document.querySelectorAll('.nav-item').forEach(function(a){
+    const active = a.dataset.nav === id;
+    a.classList.toggle('bg-primary-container', active);
+    a.classList.toggle('text-on-primary-container', active);
+    a.classList.toggle('text-on-surface-variant', !active);
+  });
+
+  if (['explorar','publicar','oferecer','mensagens'].indexOf(id) !== -1) state.telaAnterior = id;
+  window.scrollTo(0,0);
+}
+function goBack(){ showScreen(state.telaAnterior); }
+
+function toggleAuth(which) {
+  document.getElementById('login-form-wrap').classList.toggle('hidden', which !== 'login');
+  document.getElementById('cadastro-form-wrap').classList.toggle('hidden', which !== 'cadastro');
+}
+
+/* ======================= TOAST ======================= */
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  requestAnimationFrame(function(){ el.classList.remove('opacity-0'); });
+  setTimeout(function(){
+    el.classList.add('opacity-0');
+    setTimeout(function(){ el.classList.add('hidden'); }, 250);
+  }, 2600);
+}
+
+/* ======================= HELPERS ======================= */
+function pick(obj) {
+  for (let i = 1; i < arguments.length; i++) {
+    const k = arguments[i];
+    if (obj && obj[k] !== undefined && obj[k] !== null && obj[k] !== '') return obj[k];
+  }
+  return undefined;
+}
+function iconFor(categoria) {
+  const found = CATEGORIAS.find(function(c){ return c.nome.toLowerCase() === String(categoria||'').toLowerCase(); });
+  return found ? found.icon : 'work';
+}
+function initials(nome) { return (nome || '?').trim().charAt(0).toUpperCase(); }
+function mapsSrc(local) { return 'https://www.google.com/maps?q=' + encodeURIComponent((local || 'São Paulo') + ', São Paulo') + '&output=embed'; }
+function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+
+/* ======================= CHIPS ======================= */
+function renderChips() {
+  const explorarWrap = document.getElementById('categoria-chips');
+  explorarWrap.innerHTML = '<button onclick="filtrarCategoria(\'Todos\')" data-cat="Todos" class="chip flex-shrink-0 bg-primary/10 text-primary px-sm py-xs rounded-full text-label-md flex items-center gap-xs border border-primary/20"><span class="material-symbols-outlined text-[18px]">widgets</span> Todos</button>' +
+    CATEGORIAS.map(function(c){
+      return '<button onclick="filtrarCategoria(\'' + c.nome + '\')" data-cat="' + c.nome + '" class="chip flex-shrink-0 bg-surface-container-lowest text-on-surface-variant px-sm py-xs rounded-full text-label-md flex items-center gap-xs shadow-sm border border-outline-variant/30"><span class="material-symbols-outlined text-[18px]">' + c.icon + '</span> ' + c.nome + '</button>';
+    }).join('');
+
+  const publicarWrap = document.getElementById('publicar-categorias');
+  publicarWrap.innerHTML = CATEGORIAS.map(function(c,i){
+    const activeCls = i===0 ? 'bg-primary text-on-primary border-primary' : 'bg-surface text-on-surface-variant border-outline-variant';
+    return '<button type="button" onclick="selecionarCategoriaPublicar(\'' + c.nome + '\', this)" class="cat-select px-3 py-1.5 rounded-full text-label-sm border ' + activeCls + '">' + c.nome + '</button>';
+  }).join('');
+
+  const oferecerWrap = document.getElementById('oferecer-categorias');
+  oferecerWrap.innerHTML = CATEGORIAS.map(function(c){
+    return '<button type="button" class="px-3 py-1.5 rounded-full text-label-sm border bg-surface text-on-surface-variant border-outline-variant">' + c.nome + '</button>';
+  }).join('');
+}
+function selecionarCategoriaPublicar(nome, btn) {
+  publicarCategoriaEscolhida = nome;
+  document.querySelectorAll('.cat-select').forEach(function(b){
+    b.classList.remove('bg-primary','text-on-primary','border-primary');
+    b.classList.add('bg-surface','text-on-surface-variant','border-outline-variant');
+  });
+  btn.classList.add('bg-primary','text-on-primary','border-primary');
+  btn.classList.remove('bg-surface','text-on-surface-variant','border-outline-variant');
+}
+function filtrarCategoria(nome) {
+  categoriaFiltro = nome;
+  document.querySelectorAll('#categoria-chips .chip').forEach(function(b){
+    const active = b.dataset.cat === nome;
+    b.classList.toggle('bg-primary/10', active); b.classList.toggle('text-primary', active); b.classList.toggle('border-primary/20', active);
+    b.classList.toggle('bg-surface-container-lowest', !active); b.classList.toggle('text-on-surface-variant', !active);
+  });
+  renderExplorarList();
+}
+
+/* ======================= EXPLORAR ======================= */
+function setExplorarView(v) {
+  document.getElementById('explorar-list').classList.toggle('hidden', v !== 'list');
+  document.getElementById('explorar-map-wrap').classList.toggle('hidden', v !== 'mapa');
+  const listBtn = document.getElementById('view-list-btn'), mapBtn = document.getElementById('view-map-btn');
+  listBtn.classList.toggle('bg-white', v==='list'); listBtn.classList.toggle('shadow-sm', v==='list');
+  listBtn.classList.toggle('text-primary', v==='list'); listBtn.classList.toggle('text-on-surface-variant', v!=='list');
+  mapBtn.classList.toggle('bg-white', v==='mapa'); mapBtn.classList.toggle('shadow-sm', v==='mapa');
+  mapBtn.classList.toggle('text-primary', v==='mapa'); mapBtn.classList.toggle('text-on-surface-variant', v!=='mapa');
+  if (v === 'mapa') document.getElementById('explorar-map-iframe').src = mapsSrc(pick(state.user,'bairro'));
+}
+
+function emptyStateHTML(msg, sub) {
+  return '<div class="col-span-full flex flex-col items-center text-center py-20 text-on-surface-variant">' +
+    '<span class="material-symbols-outlined text-[40px] mb-2">search_off</span>' +
+    '<p class="font-semibold text-on-surface">' + esc(msg) + '</p>' +
+    '<p class="text-label-md mt-1 max-w-[280px]">' + esc(sub) + '</p>' +
+    '<button onclick="showScreen(\'publicar\')" class="mt-4 bg-primary text-on-primary text-label-md px-4 py-2 rounded-lg">Publicar um pedido</button></div>';
+}
+
+function cardTicketHTML(f, i) {
+  const titulo = pick(f,'titulo','título','nome') || 'Pedido';
+  const categoria = pick(f,'categoria') || 'Outros';
+  const bairro = pick(f,'bairro','localidade','local') || '—';
+  const distancia = pick(f,'distancia','distância');
+  const valor = pick(f,'valor','preco','preço') != null ? pick(f,'valor','preco','preço') : 0;
+  const autorNome = pick(f,'autorNome','autor_nome','nomeAutor') || 'Vizinho';
+  return '<article onclick="abrirDetalhes(' + i + ')" class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-shadow">' +
+    '<div class="p-sm flex-grow">' +
+      '<div class="flex justify-between items-start mb-sm">' +
+        '<span class="bg-primary/10 text-primary text-label-sm px-xs py-1 rounded-full inline-flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">' + iconFor(categoria) + '</span> ' + esc(categoria) + '</span>' +
+      '</div>' +
+      '<h3 class="text-headline-md leading-tight mb-xs">' + esc(titulo) + '</h3>' +
+      '<div class="flex items-center gap-sm text-on-surface-variant mb-md text-sm">' +
+        '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span>' + esc(bairro) + '</span>' +
+        (distancia ? '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">route</span>' + esc(distancia) + ' km</span>' : '') +
+      '</div>' +
+      '<div class="flex items-center gap-xs">' +
+        '<div class="w-6 h-6 rounded-full bg-surface-variant flex items-center justify-center text-[10px] font-bold text-on-surface-variant">' + initials(autorNome) + '</div>' +
+        '<span class="text-sm">' + esc(autorNome) + '</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="bg-surface-bright p-sm border-t border-dashed border-outline-variant/40 flex justify-between items-center">' +
+      '<div class="flex flex-col"><span class="text-label-sm text-on-surface-variant uppercase tracking-wider">Orçamento</span><span class="text-headline-md text-secondary-container font-bold">R$ ' + esc(valor) + '</span></div>' +
+      '<button onclick="event.stopPropagation(); abrirDetalhes(' + i + ')" class="bg-primary text-on-primary text-label-md px-sm py-2 rounded-lg">Ver pedido</button>' +
+    '</div></article>';
+}
+
+function renderExplorarList() {
+  const wrap = document.getElementById('explorar-list');
+  const indices = [];
+  for (let i = 0; i < state.favores.length; i++) {
+    const cat = pick(state.favores[i],'categoria');
+    if (categoriaFiltro === 'Todos' || cat === categoriaFiltro) indices.push(i);
+  }
+  if (!indices.length) { wrap.innerHTML = emptyStateHTML('Nenhum pedido por perto ainda', 'Seja a primeira pessoa a publicar um pedido na sua região.'); return; }
+  wrap.innerHTML = indices.map(function(i){ return cardTicketHTML(state.favores[i], i); }).join('');
+}
+
+async function carregarFavores() {
+  try {
+    const token = localStorage.getItem('authToken');
+    const res = await fetch(API_BASE + ENDPOINTS.favors, {
+      headers: {'Authorization': token ? 'Bearer ' + token : ''}
+    });
+    if (!res.ok) throw new Error('status ' + res.status);
+    const data = await res.json();
+    state.favores = Array.isArray(data) ? data : (data.favores || data.favors || data.pedidos || []);
+  } catch (e) {
+    console.warn('Não foi possível carregar pedidos do backend:', e);
+    state.favores = [];
+  }
+  renderExplorarList();
+  renderOferecerList();
+}
+
+/* ======================= DETALHES / PROPOSTA ======================= */
+function abrirDetalhes(i) {
+  const f = state.favores[i];
+  if (!f) return;
+  state.favorAtual = f;
+  const autorNome = pick(f,'autorNome','autor_nome') || 'Vizinho';
+  document.getElementById('detalhes-autor-nome').textContent = autorNome;
+  document.getElementById('detalhes-autor-foto').textContent = initials(autorNome);
+  document.getElementById('detalhes-autor-rating').textContent = pick(f,'autorAvaliacao','autor_avaliacao') || 'Novo por aqui';
+  document.getElementById('detalhes-titulo').textContent = pick(f,'titulo','título') || '';
+  document.getElementById('detalhes-categoria').textContent = pick(f,'categoria') || '';
+  document.getElementById('detalhes-categoria-icon').textContent = iconFor(pick(f,'categoria'));
+  document.getElementById('detalhes-valor').textContent = 'R$ ' + (pick(f,'valor','preco') != null ? pick(f,'valor','preco') : 0);
+  document.getElementById('detalhes-descricao').textContent = pick(f,'detalhes','descricao','descrição') || 'Sem descrição.';
+  const data = pick(f,'data','quando');
+  document.getElementById('detalhes-data-wrap').classList.toggle('hidden', !data);
+  document.getElementById('detalhes-data').textContent = data || '';
+  const bairro = pick(f,'bairro','localidade','local') || 'São Paulo';
+  document.getElementById('detalhes-bairro').textContent = bairro;
+  document.getElementById('detalhes-map-iframe').src = mapsSrc(bairro);
+  showScreen('detalhes');
+}
+
+function goToProposta() {
+  const f = state.favorAtual;
+  if (!f) return;
+  const autorNome = pick(f,'autorNome','autor_nome') || '';
+  document.getElementById('proposta-titulo').textContent = pick(f,'titulo','título') || '';
+  document.getElementById('proposta-local').textContent = pick(f,'bairro','localidade') || '';
+  const valor = pick(f,'valor','preco') != null ? pick(f,'valor','preco') : '';
+  document.getElementById('proposta-valor-orig').textContent = valor;
+  document.getElementById('proposta-valor').value = valor;
+  document.getElementById('proposta-autor-nome').textContent = autorNome;
+  document.getElementById('proposta-autor-foto').textContent = initials(autorNome);
+  showScreen('proposta');
+}
+
+function handleProposta(ev) {
+  ev.preventDefault();
+  // TODO: quando você tiver a rota de propostas no backend, o POST entra aqui.
+  toast('Proposta enviada!');
+  showScreen('detalhes');
+  return false;
+}
+
+/* ======================= OFERECER ======================= */
+function bentoCardHTML(f, i) {
+  const titulo = pick(f,'titulo','título') || 'Pedido';
+  const autorNome = pick(f,'autorNome','autor_nome') || 'Vizinho';
+  const distancia = pick(f,'distancia','distância');
+  const valor = pick(f,'valor','preco') != null ? pick(f,'valor','preco') : 0;
+  const desc = pick(f,'detalhes','descricao') || '';
+  return '<div onclick="abrirDetalhes(' + i + ')" class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant/30 hover:shadow-md transition-all cursor-pointer">' +
+    '<div class="flex justify-between items-start mb-3"><div class="flex gap-3 items-center">' +
+      '<div class="w-12 h-12 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary font-bold">' + initials(autorNome) + '</div>' +
+      '<div><h4 class="text-label-md">' + esc(autorNome) + '</h4>' + (distancia ? '<div class="text-[12px] text-on-surface-variant">' + esc(distancia) + ' km</div>' : '') + '</div>' +
+    '</div><div class="bg-secondary-container/20 text-secondary-container px-2 py-1 rounded text-label-sm font-bold">R$ ' + esc(valor) + '</div></div>' +
+    '<h5 class="font-medium mb-2">' + esc(titulo) + '</h5>' +
+    '<p class="text-on-surface-variant text-sm line-clamp-2 mb-3">' + esc(desc) + '</p>' +
+    '<div class="flex justify-end"><button onclick="event.stopPropagation(); abrirDetalhes(' + i + ')" class="bg-secondary-container text-on-secondary-container text-label-sm px-4 py-2 rounded-lg">Oferecer Ajuda</button></div></div>';
+}
+function renderOferecerList() {
+  const wrap = document.getElementById('oferecer-list');
+  if (!state.favores.length) { wrap.innerHTML = emptyStateHTML('Nenhum pedido disponível', 'Quando alguém publicar um pedido na sua região, ele aparece aqui.'); return; }
+  wrap.innerHTML = state.favores.map(function(f,i){ return bentoCardHTML(f,i); }).join('');
+}
+
+/* ======================= PUBLICAR ======================= */
+async function handlePublicar(ev) {
+  ev.preventDefault();
+  const novo = {
+    title: document.getElementById('publicar-titulo').value,
+    description: document.getElementById('publicar-detalhes').value,
+    location: document.getElementById('publicar-bairro').value,
+    price: Number(document.getElementById('publicar-valor').value) || 0,
+  };
+  const erroEl = document.querySelector('[id*="publicar"]') ? document.createElement('div') : null;
+  const token = localStorage.getItem('authToken');
+  
+  try {
+    const res = await fetch(API_BASE + ENDPOINTS.favors, { 
+      method: 'POST', 
+      headers: {'Content-Type':'application/json', 'Authorization': token ? 'Bearer ' + token : ''}, 
+      body: JSON.stringify(novo) 
+    });
+    const data = await res.json().catch(function(){ return {}; });
+    if (!res.ok) {
+      toast(data.error || 'Não foi possível publicar o pedido.');
+      return false;
+    }
+    ev.target.reset();
+    toast('Pedido publicado com sucesso!');
+    showScreen('explorar');
+    carregarFavores();
+  } catch (e) {
+    toast('Erro ao conectar com o servidor.');
+  }
+  return false;
+}
+
+/* ======================= AUTH ======================= */
+let cadastroFotoBase64 = null;
+function previewFoto(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const MAX = 320;
+      let w = img.width, h = img.height;
+      if (w > h && w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      else if (h >= w && h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      cadastroFotoBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      document.getElementById('cadastro-foto-preview').innerHTML = '<img src="' + cadastroFotoBase64 + '" class="w-full h-full object-cover"/>';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  btn.disabled = loading;
+  btn.style.opacity = loading ? .7 : 1;
+  if (loading) { btn.dataset.original = btn.innerHTML; btn.textContent = 'Só um instante...'; }
+  else if (btn.dataset.original) { btn.innerHTML = btn.dataset.original; }
+}
+
+async function handleLogin(ev) {
+  ev.preventDefault();
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-senha').value;
+  const erroEl = document.getElementById('login-error');
+  erroEl.classList.add('hidden');
+  setLoading('login-btn', true);
+  try {
+    const res = await fetch(API_BASE + ENDPOINTS.login, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: email, password: password }) });
+    const data = await res.json().catch(function(){ return {}; });
+    if (!res.ok) {
+      erroEl.textContent = data.error || data.mensagem || ('Não foi possível entrar (erro ' + res.status + ').');
+      erroEl.classList.remove('hidden');
+      return false;
+    }
+    state.user = data.user || data.usuario || { email: email };
+    if (data.token) localStorage.setItem('authToken', data.token);
+    entrarNoApp();
+  } catch (e) {
+    erroEl.textContent = 'Não foi possível conectar ao servidor. Ele pode estar iniciando — tente de novo em alguns segundos.';
+    erroEl.classList.remove('hidden');
+  } finally {
+    setLoading('login-btn', false);
+  }
+  return false;
+}
+
+async function handleCadastro(ev) {
+  ev.preventDefault();
+  const name = document.getElementById('cadastro-nome').value;
+  const email = document.getElementById('cadastro-email').value;
+  const password = document.getElementById('cadastro-senha').value;
+  const location = document.getElementById('cadastro-bairro').value;
+  const erroEl = document.getElementById('cadastro-error');
+  erroEl.classList.add('hidden');
+  setLoading('cadastro-btn', true);
+  try {
+    const payload = { name: name, email: email, password: password, location: location };
+    if (cadastroFotoBase64) payload.photo = cadastroFotoBase64;
+    const res = await fetch(API_BASE + ENDPOINTS.register, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const data = await res.json().catch(function(){ return {}; });
+    if (!res.ok) {
+      erroEl.textContent = data.error || data.mensagem || ('Não foi possível criar a conta (erro ' + res.status + ').');
+      erroEl.classList.remove('hidden');
+      return false;
+    }
+    state.user = data.user || data.usuario || { name: name, email: email, location: location };
+    if (data.token) localStorage.setItem('authToken', data.token);
+    entrarNoApp();
+  } catch (e) {
+    erroEl.textContent = 'Não foi possível conectar ao servidor. Ele pode estar iniciando — tente de novo em alguns segundos.';
+    erroEl.classList.remove('hidden');
+  } finally {
+    setLoading('cadastro-btn', false);
+  }
+  return false;
+}
+
+function entrarNoApp() {
+  const nome = pick(state.user,'name','nome') || 'Você';
+  const bairro = pick(state.user,'location','bairro') || '';
+  const foto = pick(state.user,'photo');
+  document.getElementById('explorar-bairro').textContent = bairro || 'você';
+  document.getElementById('perfil-nome').textContent = nome;
+  document.getElementById('perfil-bairro').textContent = bairro;
+  const perfilFotoEl = document.getElementById('perfil-foto');
+  perfilFotoEl.innerHTML = foto ? '<img src="' + foto + '" class="w-full h-full object-cover"/>' : initials(nome);
+  carregarFavores();
+  showScreen('explorar');
+}
+
+function handleLogout() { 
+  state.user = null; 
+  localStorage.removeItem('authToken');
+  showScreen('auth'); 
+}
+
+/* ======================= INIT ======================= */
+renderChips();
+setExplorarView('list');
+</script>
+</body>
+</html>
