@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Favor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-container": "#edeef0", "on-secondary-fixed": "#2a1700", "secondary": "#855300",
+        "on-background": "#191c1e", "on-primary": "#ffffff", "on-secondary-container": "#684000",
+        "on-tertiary": "#ffffff", "inverse-surface": "#2e3132", "on-error-container": "#93000a",
+        "tertiary": "#006242", "surface-dim": "#d9dadc", "on-tertiary-fixed-variant": "#005236",
+        "surface-bright": "#f8f9fb", "tertiary-fixed-dim": "#4edea3", "tertiary-container": "#007d55",
+        "surface": "#f8f9fb", "surface-variant": "#e1e2e4", "inverse-primary": "#b4c5ff",
+        "on-secondary-fixed-variant": "#653e00", "on-tertiary-container": "#bdffdb",
+        "surface-container-low": "#f3f4f6", "error-container": "#ffdad6", "outline-variant": "#c3c6d7",
+        "error": "#ba1a1a", "on-primary-fixed-variant": "#003ea8", "primary-fixed": "#dbe1ff",
+        "on-primary-container": "#eeefff", "outline": "#737686", "tertiary-fixed": "#6ffbbe",
+        "on-tertiary-fixed": "#002113", "surface-container-lowest": "#ffffff", "on-error": "#ffffff",
+        "background": "#f8f9fb", "on-primary-fixed": "#00174b", "inverse-on-surface": "#f0f1f3",
+        "secondary-fixed-dim": "#ffb95f", "secondary-container": "#fea619", "primary-container": "#2563eb",
+        "on-secondary": "#ffffff", "surface-container-highest": "#e1e2e4", "surface-tint": "#0053db",
+        "primary": "#004ac6", "on-surface-variant": "#434655", "primary-fixed-dim": "#b4c5ff",
+        "secondary-fixed": "#ffddb8", "surface-container-high": "#e7e8ea", "on-surface": "#191c1e"
+      },
+      borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+      spacing: { gutter: "20px", "margin-mobile": "16px", xs: "8px", sm: "16px", lg: "40px", base: "4px", "max-width": "1280px", "margin-desktop": "auto", md: "24px", xl: "64px" },
+      fontSize: {
+        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }],
+        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+        "headline-lg-mobile": ["24px", { lineHeight: "32px", fontWeight: "600" }]
+      }
+    }
+  }
+}
+</script>
+<style>
+  body{font-family:'Inter',sans-serif;min-height:100dvh}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;font-size:24px;line-height:1;vertical-align:middle}
+  .material-symbols-outlined.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+  .hide-scrollbar::-webkit-scrollbar{display:none}
+  .hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+  .screen{display:none !important}
+  .screen.active{display:block !important}
+  input[type=range]{-webkit-appearance:none;width:100%;background:transparent}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:20px;width:20px;border-radius:50%;background:#004ac6;cursor:pointer;margin-top:-8px;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+  input[type=range]::-webkit-slider-runnable-track{width:100%;height:4px;background:#e1e2e4;border-radius:2px}
+  #toast{transition:opacity .25s}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+</head>
+<body class="bg-background text-on-background antialiased pb-24">
+
+<!-- ===== HEADER: brand (main tabs) ===== -->
+<header id="main-header" class="hidden bg-surface shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-12 md:px-margin-desktop md:max-w-max-width md:left-1/2 md:-translate-x-1/2" style="padding-top:env(safe-area-inset-top,0)">
+  <div class="flex items-center gap-xs">
+    <span class="material-symbols-outlined text-primary">handshake</span>
+    <h1 class="text-headline-md font-bold text-primary">Favor</h1>
+  </div>
+  <button onclick="showScreen('perfil')" id="header-avatar" class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden flex items-center justify-center text-on-surface-variant">
+    <span class="material-symbols-outlined text-[20px]">person</span>
+  </button>
+</header>
+
+<!-- ===== HEADER: back button (detail screens) ===== -->
+<header id="detail-header" class="hidden bg-surface shadow-sm fixed top-0 w-full z-50" style="padding-top:env(safe-area-inset-top,0)">
+  <div class="flex justify-between items-center w-full px-margin-mobile h-12 md:px-margin-desktop md:max-w-max-width md:mx-auto">
+    <button onclick="goBack()" aria-label="Voltar" class="text-on-surface-variant p-2 -ml-2 rounded-full active:bg-surface-variant/50">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <h1 id="detail-header-title" class="text-headline-md text-on-surface font-semibold flex-1 text-center pr-8">Detalhes</h1>
+  </div>
+</header>
+
+<!-- ===================== AUTH ===================== -->
+<section data-screen="auth" class="screen active min-h-screen flex items-center justify-center px-margin-mobile">
+  <div class="w-full max-w-[420px] py-lg">
+    <div class="flex items-center gap-xs mb-md">
+      <span class="material-symbols-outlined text-primary text-[32px]">handshake</span>
+      <h1 class="text-headline-lg text-primary font-bold">Favor</h1>
+    </div>
+
+    <div id="login-form-wrap">
+      <p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Bem-vindo</p>
+      <h2 class="text-headline-lg mb-xs">Entrar</h2>
+      <p class="text-on-surface-variant mb-md">Entre pra ver os favores perto de você.</p>
+      <form id="login-form" class="flex flex-col gap-sm" onsubmit="return handleLogin(event)">
+        <div>
+          <label class="text-label-md block mb-1">Email</label>
+          <input required type="email" id="login-email" placeholder="voce@exemplo.com" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <div>
+          <label class="text-label-md block mb-1">Senha</label>
+          <input required type="password" id="login-senha" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <p id="login-error" class="text-error text-label-sm hidden"></p>
+        <button type="submit" id="login-btn" class="bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg mt-xs flex items-center justify-center gap-2 active:scale-[.98] transition-transform">
+          <span class="material-symbols-outlined text-[20px]">login</span> Entrar
+        </button>
+      </form>
+      <p class="text-center mt-md text-label-md">Não tem conta? <button type="button" onclick="toggleAuth('cadastro')" class="text-primary font-bold">Cadastre-se</button></p>
+    </div>
+
+    <div id="cadastro-form-wrap" class="hidden">
+      <p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Bem-vindo</p>
+      <h2 class="text-headline-lg mb-xs">Criar conta</h2>
+      <p class="text-on-surface-variant mb-md">Leva menos de um minuto.</p>
+      <form id="cadastro-form" class="flex flex-col gap-sm" onsubmit="return handleCadastro(event)">
+        <div class="flex items-center gap-3">
+          <div id="cadastro-foto-preview" class="w-14 h-14 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant overflow-hidden shrink-0">
+            <span class="material-symbols-outlined">add_a_photo</span>
+          </div>
+          <label class="text-label-md text-primary font-bold cursor-pointer">
+            Adicionar foto
+            <input type="file" id="cadastro-foto" accept="image/*" class="hidden" onchange="previewFoto(event)"/>
+          </label>
+        </div>
+        <div>
+          <label class="text-label-md block mb-1">Seu nome</label>
+          <input required id="cadastro-nome" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <div>
+          <label class="text-label-md block mb-1">Email</label>
+          <input required type="email" id="cadastro-email" placeholder="voce@exemplo.com" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <div>
+          <label class="text-label-md block mb-1">Senha</label>
+          <input required type="password" id="cadastro-senha" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <div>
+          <label class="text-label-md block mb-1">Cidade / bairro</label>
+          <input required id="cadastro-bairro" placeholder="Ex: Vila Mariana, São Paulo - SP" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        </div>
+        <p id="cadastro-error" class="text-error text-label-sm hidden"></p>
+        <button type="submit" id="cadastro-btn" class="bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg mt-xs active:scale-[.98] transition-transform">Criar conta</button>
+      </form>
+      <p class="text-center mt-md text-label-md">Já tem conta? <button type="button" onclick="toggleAuth('login')" class="text-primary font-bold">Entrar</button></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== EXPLORAR ===================== -->
+<section data-screen="explorar" class="screen">
+  <main class="pt-16 px-margin-mobile md:px-margin-desktop md:max-w-max-width mx-auto">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-sm mb-sm mt-sm">
+      <div>
+        <h2 class="text-headline-lg-mobile md:text-headline-lg mb-1">Explorar Favores</h2>
+        <div class="flex items-center text-on-surface-variant gap-xs">
+          <span class="material-symbols-outlined text-[18px]">location_on</span>
+          <span class="text-sm">Perto de <span id="explorar-bairro" class="font-bold text-primary">você</span></span>
+        </div>
+      </div>
+      <div class="flex bg-surface-container-low rounded-lg p-1 w-max">
+        <button id="view-list-btn" onclick="setExplorarView('list')" class="px-sm py-xs bg-white shadow-sm rounded flex items-center gap-xs text-primary text-label-md">
+          <span class="material-symbols-outlined text-[18px]">list</span> Lista
+        </button>
+        <button id="view-map-btn" onclick="setExplorarView('mapa')" class="px-sm py-xs rounded flex items-center gap-xs text-on-surface-variant text-label-md">
+          <span class="material-symbols-outlined text-[18px]">map</span> Mapa
+        </button>
+      </div>
+    </div>
+
+    <div class="flex overflow-x-auto hide-scrollbar gap-sm pb-xs mb-md" id="categoria-chips"></div>
+
+    <div id="explorar-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md pb-md"></div>
+    <div id="explorar-map-wrap" class="hidden pb-md">
+      <iframe id="explorar-map-iframe" class="w-full h-[60vh] rounded-xl" style="border:0" loading="lazy"></iframe>
+    </div>
+  </main>
+</section>
+
+<!-- ===================== DETALHES ===================== -->
+<section data-screen="detalhes" class="screen">
+  <main class="pt-16 pb-36 px-margin-mobile md:px-margin-desktop md:max-w-[800px] mx-auto space-y-4">
+    <section id="det-autor" class="flex items-center gap-4 bg-surface p-md rounded-xl shadow-sm border border-surface-container-low mt-sm"></section>
+    <section class="bg-surface p-md rounded-xl shadow-sm border border-surface-container-low space-y-4">
+      <div class="flex justify-between items-start gap-4">
+        <div class="min-w-0">
+          <h1 id="det-titulo" class="text-headline-lg-mobile md:text-headline-lg mb-2 break-words"></h1>
+          <div id="det-cat"></div>
+        </div>
+        <div class="bg-secondary-container/10 text-secondary-container px-4 py-2 rounded-lg text-center shrink-0">
+          <span class="block text-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Valor</span>
+          <span id="det-preco" class="text-headline-md font-bold"></span>
+        </div>
+      </div>
+      <hr class="border-surface-container-high"/>
+      <div class="space-y-4 text-on-surface-variant">
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-outline mt-0.5">description</span>
+          <p id="det-desc" class="leading-relaxed whitespace-pre-wrap break-words min-w-0"></p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-outline">calendar_month</span>
+          <span id="det-data"></span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="material-symbols-outlined text-outline mt-0.5">location_on</span>
+          <div class="w-full min-w-0">
+            <span id="det-local" class="block mb-2 text-on-surface font-medium break-words"></span>
+            <div class="w-full h-56 rounded-lg overflow-hidden border border-surface-container-high">
+              <iframe id="det-map" class="w-full h-full" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="bg-primary/5 border border-primary/10 p-sm rounded-lg flex items-center gap-3">
+      <span class="material-symbols-outlined text-primary text-[28px]">forum</span>
+      <div>
+        <h3 class="text-label-md text-primary font-semibold">Combine tudo pelo chat</h3>
+        <p class="text-label-sm text-on-surface-variant mt-1">Converse com quem publicou para acertar horário, local e forma de pagamento.</p>
+      </div>
+    </section>
+  </main>
+  <div class="fixed bottom-0 left-0 w-full bg-surface border-t border-surface-container-high p-4 shadow-[0_-4px_12px_rgba(0,0,0,.05)] z-40" style="padding-bottom:max(16px,env(safe-area-inset-bottom))">
+    <div id="det-bar" class="max-w-[800px] mx-auto"></div>
+  </div>
+</section>
+
+<!-- ===================== PROPOSTA ===================== -->
+<section data-screen="proposta" class="screen">
+  <main class="pt-16 pb-28 px-margin-mobile md:max-w-[600px] mx-auto">
+    <div id="prop-resumo" class="bg-surface-container-lowest rounded-xl shadow-sm p-md mb-md mt-sm border border-surface-container-high/50"></div>
+    <form id="proposta-form" class="flex flex-col gap-md" onsubmit="return handleProposta(event)">
+      <div>
+        <label class="text-label-md block mb-1" for="prop-msg">Sua mensagem</label>
+        <div id="prop-chips" class="flex flex-wrap gap-2 mb-2"></div>
+        <textarea id="prop-msg" rows="4" required class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm resize-none"></textarea>
+        <p class="text-label-sm text-on-surface-variant mt-1">Essa mensagem abre uma conversa com quem publicou o favor.</p>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1" for="prop-valor">Valor da sua oferta</label>
+        <div class="relative">
+          <span class="absolute left-sm top-1/2 -translate-y-1/2 font-semibold text-on-surface-variant">R$</span>
+          <input id="prop-valor" type="number" min="0" step="any" class="w-full pl-[40px] pr-sm py-sm bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-semibold"/>
+        </div>
+      </div>
+    </form>
+  </main>
+  <div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-surface-variant p-margin-mobile shadow-[0_-4px_12px_rgba(0,0,0,.05)] z-40" style="padding-bottom:max(16px,env(safe-area-inset-bottom))">
+    <button id="prop-btn" onclick="document.getElementById('proposta-form').requestSubmit()" class="w-full max-w-[600px] mx-auto bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg flex justify-center items-center gap-2 active:scale-[.98] transition-transform">
+      <span class="material-symbols-outlined">send</span> Enviar proposta
+    </button>
+  </div>
+</section>
+
+<!-- ===================== EDITAR ===================== -->
+<section data-screen="editar" class="screen">
+  <main class="pt-20 pb-28 px-margin-mobile md:max-w-[600px] mx-auto">
+    <form class="flex flex-col gap-md" onsubmit="return handleEditar(event)">
+      <div><label class="text-label-md block mb-1">Título</label><input required id="edit-titulo" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/></div>
+      <div><label class="text-label-md block mb-1">Detalhes</label><textarea required id="edit-detalhes" rows="4" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm resize-none"></textarea></div>
+      <div><label class="text-label-md block mb-1">Endereço (rua e número)</label><input id="edit-endereco" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/></div>
+      <div><label class="text-label-md block mb-1">Valor (R$)</label><input required id="edit-valor" type="number" min="1" step="any" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm font-semibold"/></div>
+      <p id="edit-error" class="text-error text-label-sm hidden"></p>
+      <button type="submit" id="edit-btn" class="bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg flex justify-center items-center gap-2 active:scale-[.98] transition-transform"><span class="material-symbols-outlined">check</span> Salvar alterações</button>
+    </form>
+  </main>
+</section>
+
+<!-- ===================== PUBLICAR ===================== -->
+<section data-screen="publicar" class="screen">
+  <main class="pt-20 pb-28 px-margin-mobile md:max-w-[600px] mx-auto">
+    <h2 class="text-headline-lg-mobile mb-1">Descreva o favor que você precisa</h2>
+    <p class="text-on-surface-variant mb-md">Seja direto: quanto mais claro, mais rápido alguém aparece.</p>
+    <form id="publicar-form" class="flex flex-col gap-md" onsubmit="return handlePublicar(event)">
+      <div>
+        <label class="text-label-md block mb-1">Título do favor</label>
+        <input required id="pub-titulo" placeholder="Ex: Ajuda para montar guarda-roupa" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1">Categoria (opcional)</label>
+        <div id="publicar-categorias" class="flex flex-wrap gap-2"></div>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1">Detalhes</label>
+        <textarea required id="pub-detalhes" rows="4" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm resize-none"></textarea>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1">Cidade / bairro</label>
+        <input required id="pub-local" oninput="previewMapa()" placeholder="Ex: Vila Mariana, São Paulo - SP" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        <p class="text-label-sm text-on-surface-variant mt-1">Usado para calcular a distância até quem quer ajudar.</p>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1">Endereço (rua e número)</label>
+        <input id="pub-endereco" oninput="previewMapa()" placeholder="Ex: Rua das Flores, 120" class="w-full bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg p-sm"/>
+        <p class="text-label-sm text-on-surface-variant mt-1">Aparece no mapa para quem abrir o favor.</p>
+        <div id="pub-map-wrap" class="hidden mt-2 w-full h-48 rounded-lg overflow-hidden border border-surface-container-high">
+          <iframe id="pub-map" class="w-full h-full" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+      <div>
+        <label class="text-label-md block mb-1">Quanto você paga</label>
+        <div class="relative">
+          <span class="absolute left-sm top-1/2 -translate-y-1/2 font-semibold text-on-surface-variant">R$</span>
+          <input required id="pub-valor" type="number" min="1" step="any" class="w-full pl-[40px] pr-sm py-sm bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-semibold"/>
+        </div>
+      </div>
+      <p id="pub-error" class="text-error text-label-sm hidden"></p>
+      <button type="submit" id="pub-btn" class="bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg flex justify-center items-center gap-2 active:scale-[.98] transition-transform">
+        <span class="material-symbols-outlined">campaign</span> Publicar favor
+      </button>
+    </form>
+  </main>
+</section>
+
+<!-- ===================== OFERECER ===================== -->
+<section data-screen="oferecer" class="screen">
+  <main class="pt-20 pb-28 px-margin-mobile md:px-margin-desktop md:max-w-max-width mx-auto">
+    <h2 class="text-headline-lg-mobile mb-1">Ganhe uma renda extra</h2>
+    <p class="text-on-surface-variant mb-md">Escolha o que você sabe fazer e o raio que topa se deslocar.</p>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-md">
+      <aside class="md:col-span-4 lg:col-span-3 space-y-sm">
+        <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant/50">
+          <h3 class="text-label-md mb-2">O que você sabe fazer?</h3>
+          <div id="oferecer-categorias" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant/50">
+          <div class="flex justify-between items-center mb-1">
+            <h3 class="text-label-md flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">location_on</span> Raio de atuação</h3>
+            <span id="oferecer-raio-valor" class="text-primary font-bold text-label-md">20 km</span>
+          </div>
+          <input type="range" min="1" max="50" value="20" id="oferecer-raio" oninput="atualizarRaio(this.value)"/>
+          <div class="flex justify-between text-[10px] text-on-surface-variant mt-2"><span>1 km</span><span>50 km</span></div>
+        </div>
+      </aside>
+      <div class="md:col-span-8 lg:col-span-9">
+        <div id="oferecer-list" class="grid grid-cols-1 lg:grid-cols-2 gap-sm"></div>
+      </div>
+    </div>
+  </main>
+</section>
+
+<!-- ===================== MENSAGENS ===================== -->
+<section data-screen="mensagens" class="screen">
+  <main class="pt-20 pb-28 px-margin-mobile md:max-w-[700px] mx-auto">
+    <h2 class="text-headline-lg-mobile mb-md">Mensagens</h2>
+    <div id="mensagens-list" class="flex flex-col gap-2"></div>
+  </main>
+</section>
+
+<!-- ===================== CHAT ===================== -->
+<section data-screen="chat" class="screen">
+  <main class="pt-16 pb-24 px-4 md:max-w-[700px] mx-auto">
+    <div id="chat-msgs" class="flex flex-col gap-2 mt-sm"></div>
+  </main>
+  <form onsubmit="return enviarMsg(event)" class="fixed bottom-0 left-0 w-full bg-surface border-t border-surface-container-high px-3 pt-3 z-40 flex gap-2 items-center" style="padding-bottom:max(12px,env(safe-area-inset-bottom))">
+    <input id="chat-input" autocomplete="off" placeholder="Escreva uma mensagem..." class="flex-1 min-w-0 bg-surface-container-low border-transparent focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary rounded-full px-4 py-3"/>
+    <button type="submit" aria-label="Enviar" class="bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center shrink-0"><span class="material-symbols-outlined">send</span></button>
+  </form>
+</section>
+
+<!-- ===================== PERFIL ===================== -->
+<section data-screen="perfil" class="screen">
+  <main class="pt-20 pb-28 px-margin-mobile md:max-w-[600px] mx-auto">
+    <div class="flex items-center gap-4 mb-md">
+      <div id="perfil-foto"></div>
+      <div class="min-w-0">
+        <h2 id="perfil-nome" class="text-headline-md truncate"></h2>
+        <p id="perfil-bairro" class="text-on-surface-variant text-label-md"></p>
+      </div>
+    </div>
+    <div class="grid grid-cols-3 gap-2 mb-md text-center">
+      <div class="bg-surface-container-lowest rounded-xl p-sm shadow-sm border border-surface-variant/50">
+        <p class="text-headline-md font-bold text-primary">0</p>
+        <p class="text-label-sm text-on-surface-variant">Favores feitos</p>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-sm shadow-sm border border-surface-variant/50">
+        <p class="text-headline-md font-bold text-primary">—</p>
+        <p class="text-label-sm text-on-surface-variant">Avaliação</p>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-sm shadow-sm border border-surface-variant/50">
+        <p id="perfil-ativos" class="text-headline-md font-bold text-primary">0</p>
+        <p class="text-label-sm text-on-surface-variant">Favores ativos</p>
+      </div>
+    </div>
+    <div id="perfil-menu" class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant/50 divide-y divide-surface-variant/50"></div>
+  </main>
+</section>
+
+<!-- ===================== SUBTELAS DO PERFIL ===================== -->
+<section data-screen="sub" class="screen">
+  <main class="pt-16 pb-8 px-margin-mobile md:max-w-[600px] mx-auto">
+    <div id="sub-content" class="grid grid-cols-1 gap-md mt-sm"></div>
+  </main>
+</section>
+
+<!-- ===================== BOTTOM NAV ===================== -->
+<nav id="bottom-nav" class="hidden md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container-lowest shadow-[0_-4px_12px_rgba(0,0,0,.05)] rounded-t-xl" style="padding-bottom:max(8px,env(safe-area-inset-bottom))">
+  <a href="javascript:void(0)" onclick="showScreen('explorar')" data-nav="explorar" class="nav-item flex flex-col items-center px-3 py-1 rounded-xl text-on-surface-variant">
+    <span class="material-symbols-outlined">explore</span><span class="text-label-sm">Explorar</span>
+  </a>
+  <a href="javascript:void(0)" onclick="showScreen('publicar')" data-nav="publicar" class="nav-item flex flex-col items-center px-3 py-1 rounded-xl text-on-surface-variant">
+    <span class="material-symbols-outlined">add_circle</span><span class="text-label-sm">Publicar</span>
+  </a>
+  <a href="javascript:void(0)" onclick="showScreen('oferecer')" data-nav="oferecer" class="nav-item flex flex-col items-center px-3 py-1 rounded-xl text-on-surface-variant">
+    <span class="material-symbols-outlined">volunteer_activism</span><span class="text-label-sm">Oferecer</span>
+  </a>
+  <a href="javascript:void(0)" onclick="showScreen('mensagens')" data-nav="mensagens" class="nav-item flex flex-col items-center px-3 py-1 rounded-xl text-on-surface-variant">
+    <span class="material-symbols-outlined">chat_bubble</span><span class="text-label-sm">Mensagens</span>
+  </a>
+  <a href="javascript:void(0)" onclick="showScreen('perfil')" data-nav="perfil" class="nav-item flex flex-col items-center px-3 py-1 rounded-xl text-on-surface-variant">
+    <span class="material-symbols-outlined">person</span><span class="text-label-sm">Perfil</span>
+  </a>
+</nav>
+
+<div id="toast" class="hidden fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 bg-on-background text-white px-4 py-2 rounded-lg text-label-md z-[60] opacity-0"></div>
+
+<script>
+/* ======================= CONFIG ======================= */
+const API_BASE = 'https://beta-app-favor-project-with-ai-1.onrender.com';
+const EP = { login: '/api/auth/login', register: '/api/auth/register', favors: '/api/favors', mine: '/api/favors/meus', convs: '/api/conversations' };
+
+const CATEGORIAS = [
+  { nome: 'Mudança', icon: 'local_shipping' },
+  { nome: 'Faxina', icon: 'cleaning_services' },
+  { nome: 'Reparos', icon: 'plumbing' },
+  { nome: 'Pets', icon: 'pets' },
+  { nome: 'Aulas', icon: 'school' },
+  { nome: 'Montagem', icon: 'construction' },
+];
+const MAIN = ['explorar', 'publicar', 'oferecer', 'mensagens', 'perfil'];
+const MENU = [
+  ['meus', 'receipt_long', 'Meus favores publicados'],
+  ['ajudei', 'volunteer_activism', 'Favores que já ajudei'],
+  ['aval', 'star', 'Minhas avaliações'],
+  ['receb', 'account_balance_wallet', 'Formas de recebimento'],
+  ['notif', 'notifications', 'Notificações'],
+  ['config', 'settings', 'Configurações'],
+];
+const SEL = 'bg-primary text-on-primary border-primary';
+const UNSEL = 'bg-surface text-on-surface-variant border-outline-variant';
+const CHIP_ON = 'bg-primary/10 text-primary border-primary/20';
+const CHIP_OFF = 'bg-surface-container-lowest text-on-surface-variant border-outline-variant/30';
+const TEMPLATES = [
+  { label: 'Posso ajudar', text: function (f) { return 'Olá, ' + primeiroNome(f.authorName) + '! Vi o seu favor "' + f.title + '" e posso ajudar. Podemos combinar?'; } },
+  { label: 'Tenho experiência', text: function (f) { return 'Oi, ' + primeiroNome(f.authorName) + '! Tenho experiência com isso e posso fazer o favor "' + f.title + '". Vamos combinar os detalhes?'; } },
+  { label: 'Posso hoje', text: function (f) { return 'Olá! Consigo te ajudar ainda hoje com "' + f.title + '". Qual o melhor horário pra você?'; } },
+];
+
+const CACHE = {};
+let state = { user: null, favores: [], loadError: false, favorAtual: null, history: [], current: 'auth', conv: null, convs: [], skills: [], filtro: 'Todos', catPub: '', subTitle: '', chatTitle: '' };
+let mapTimer = null;
+
+/* ======================= HELPERS ======================= */
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function initials(n) { return (n || '?').trim().charAt(0).toUpperCase(); }
+function primeiroNome(n) { return String(n || '').trim().split(' ')[0] || 'vizinho'; }
+function km(n) { return String(n).replace('.', ','); }
+function brl(n) { return 'R$ ' + Number(n || 0).toLocaleString('pt-BR'); }
+function iconFor(cat) { const c = CATEGORIAS.find(function (x) { return x.nome === cat; }); return c ? c.icon : 'work'; }
+function fmtTime(iso, full) {
+  const d = new Date(iso); if (isNaN(d)) return '';
+  const hoje = d.toDateString() === new Date().toDateString();
+  const hora = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  if (hoje) return hora;
+  const dia = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  return full ? dia + ' ' + hora : dia;
+}
+function fmtDate(iso) { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }); }
+function mapsSrc(address, location) {
+  const q = [address, location].filter(Boolean).join(', ') || 'São Paulo';
+  return 'https://www.google.com/maps?q=' + encodeURIComponent(q) + '&z=' + (address ? 17 : 13) + '&output=embed';
+}
+function avatar(name, photo, cls) {
+  cls = cls || 'w-10 h-10';
+  return photo
+    ? '<img src="' + esc(photo) + '" alt="" class="' + cls + ' rounded-full object-cover shrink-0"/>'
+    : '<div class="' + cls + ' rounded-full bg-surface-variant flex items-center justify-center font-bold text-on-surface-variant shrink-0">' + esc(initials(name)) + '</div>';
+}
+function setCls(el, onC, offC, on) {
+  onC.split(' ').forEach(function (c) { el.classList.toggle(c, on); });
+  offC.split(' ').forEach(function (c) { el.classList.toggle(c, !on); });
+}
+function setLoading(id, on) {
+  const b = $(id); if (!b) return;
+  b.disabled = on; b.style.opacity = on ? 0.7 : 1;
+  if (on) { if (!b.dataset.orig) b.dataset.orig = b.innerHTML; b.textContent = 'Só um instante...'; }
+  else if (b.dataset.orig) { b.innerHTML = b.dataset.orig; delete b.dataset.orig; }
+}
+function toast(msg) {
+  const el = $('toast');
+  if (!el) return;
+  el.textContent = msg; el.classList.remove('hidden');
+  requestAnimationFrame(function () { el.classList.remove('opacity-0'); });
+  clearTimeout(toast.t);
+  toast.t = setTimeout(function () { el.classList.add('opacity-0'); setTimeout(function () { el.classList.add('hidden'); }, 250); }, 2800);
+}
+function emptyHTML(icon, msg, sub, btnLabel, btnAction) {
+  return '<div class="col-span-full flex flex-col items-center text-center py-16 text-on-surface-variant"><span class="material-symbols-outlined text-[40px] mb-2">' + icon + '</span>' +
+    '<p class="font-semibold text-on-surface">' + esc(msg) + '</p>' + (sub ? '<p class="text-label-md mt-1 max-w-[280px]">' + esc(sub) + '</p>' : '') +
+    (btnLabel ? '<button onclick="' + btnAction + '" class="mt-4 bg-primary text-on-primary text-label-md px-4 py-2 rounded-lg">' + esc(btnLabel) + '</button>' : '') + '</div>';
+}
+
+/* Chamada ao backend com o token de login */
+async function api(path, opts) {
+  opts = opts || {};
+  const headers = { 'Content-Type': 'application/json' };
+  const token = localStorage.getItem('authToken');
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  let res;
+  try { res = await fetch(API_BASE + path, Object.assign({}, opts, { headers: headers })); }
+  catch (e) { throw new Error('Sem conexão com o servidor. Ele pode estar iniciando — tente de novo em alguns segundos.'); }
+  const data = await res.json().catch(function () { return {}; });
+  if (res.status === 401) { handleLogout(); toast('Sessão expirada. Entre novamente.'); throw new Error(data.error || 'Sessão expirada.'); }
+  if (!res.ok) throw new Error(data.error || ('Erro ' + res.status));
+  return data;
+}
+
+/* Converte o favor que vem do backend (inglês) para o formato da tela */
+function normFavor(f) {
+  const a = f.createdBy && typeof f.createdBy === 'object' ? f.createdBy : {};
+  const authorId = String(a._id || (typeof f.createdBy === 'string' ? f.createdBy : '') || '');
+  const mine = !!state.user && authorId === String(state.user.id);
+  const n = {
+    id: f._id || f.id, title: f.title || 'Favor', description: f.description || '', price: f.price || 0,
+    category: f.category || '', location: f.location || '', address: f.address || '', lat: f.lat, lng: f.lng, dist: f.distanciaKm,
+    date: f.createdAt, authorId: authorId, mine: mine,
+    authorName: a.name || (mine ? state.user.name : 'Vizinho'),
+    authorPhoto: a.photo || (mine ? state.user.photo : '')
+  };
+  CACHE[n.id] = n;
+  return n;
+}
+
+/* ======================= NAVEGAÇÃO ======================= */
+function showScreen(id, title) {
+  state.current = id;
+  if (MAIN.indexOf(id) !== -1) state.history = [];
+  document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('active'); });
+  document.querySelector('[data-screen="' + id + '"]').classList.add('active');
+
+  const isAuth = id === 'auth';
+  const isDetail = !isAuth && MAIN.indexOf(id) === -1;
+  $('main-header').classList.toggle('hidden', isAuth || isDetail);
+  $('detail-header').classList.toggle('hidden', !isDetail);
+  $('bottom-nav').classList.toggle('hidden', isAuth || isDetail);
+  if (isDetail) $('detail-header-title').textContent = title || (id === 'sub' ? state.subTitle : id === 'chat' ? state.chatTitle : id === 'detalhes' ? 'Detalhes do Favor' : id === 'proposta' ? 'Oferecer ajuda' : '');
+
+  document.querySelectorAll('.nav-item').forEach(function (a) {
+    setCls(a, 'bg-primary-container text-on-primary-container', 'text-on-surface-variant', a.dataset.nav === id);
+  });
+
+  if (id === 'explorar' || id === 'oferecer') carregarFavores();
+  if (id === 'mensagens') carregarConversas();
+  if (id === 'perfil') carregarPerfil();
+  window.scrollTo(0, 0);
+}
+function navigate(id, title) { state.history.push(state.current); showScreen(id, title); }
+function goBack() { showScreen(state.history.pop() || 'explorar'); }
+function toggleAuth(which) {
+  $('login-form-wrap').classList.toggle('hidden', which !== 'login');
+  $('cadastro-form-wrap').classList.toggle('hidden', which !== 'cadastro');
+}
+
+/* ======================= CHIPS / FILTROS ======================= */
+function renderChips() {
+  $('categoria-chips').innerHTML = [{ nome: 'Todos', icon: 'widgets' }].concat(CATEGORIAS).map(function (c) {
+    return '<button data-cat="' + c.nome + '" onclick="filtrarCategoria(this.dataset.cat)" class="chip flex-shrink-0 px-sm py-xs rounded-full text-label-md flex items-center gap-xs border shadow-sm ' + (c.nome === state.filtro ? CHIP_ON : CHIP_OFF) + '"><span class="material-symbols-outlined text-[18px]">' + c.icon + '</span> ' + c.nome + '</button>';
+  }).join('');
+  $('publicar-categorias').innerHTML = CATEGORIAS.map(function (c) {
+    return '<button type="button" data-n="' + c.nome + '" onclick="selCatPub(this)" class="cat-select px-3 py-1.5 rounded-full text-label-sm border ' + UNSEL + '">' + c.nome + '</button>';
+  }).join('');
+  $('oferecer-categorias').innerHTML = CATEGORIAS.map(function (c) {
+    return '<button type="button" data-n="' + c.nome + '" onclick="toggleSkill(this)" class="px-3 py-1.5 rounded-full text-label-sm border ' + UNSEL + '">' + c.nome + '</button>';
+  }).join('');
+  $('perfil-menu').innerHTML = MENU.map(function (m) {
+    return '<button onclick="abrirSub(\'' + m[0] + '\')" class="w-full flex items-center justify-between p-sm text-left"><span class="flex items-center gap-3"><span class="material-symbols-outlined text-on-surface-variant">' + m[1] + '</span> ' + m[2] + '</span><span class="material-symbols-outlined text-on-surface-variant">chevron_right</span></button>';
+  }).join('') + '<button onclick="handleLogout()" class="w-full flex items-center gap-3 p-sm text-left text-error"><span class="material-symbols-outlined">logout</span> Sair da conta</button>';
+}
+function filtrarCategoria(nome) {
+  state.filtro = nome;
+  document.querySelectorAll('#categoria-chips .chip').forEach(function (b) { setCls(b, CHIP_ON, CHIP_OFF, b.dataset.cat === nome); });
+  renderExplorar();
+}
+function selCatPub(btn) {
+  const igual = state.catPub === btn.dataset.n;
+  state.catPub = igual ? '' : btn.dataset.n;
+  document.querySelectorAll('.cat-select').forEach(function (b) { setCls(b, SEL, UNSEL, !igual && b === btn); });
+}
+function toggleSkill(btn) {
+  const n = btn.dataset.n, i = state.skills.indexOf(n);
+  if (i === -1) state.skills.push(n); else state.skills.splice(i, 1);
+  setCls(btn, SEL, UNSEL, i === -1);
+  renderOferecer();
+}
+function atualizarRaio(v) { $('oferecer-raio-valor').textContent = v + ' km'; renderOferecer(); }
+
+/* ======================= FAVORES: EXPLORAR / OFERECER ======================= */
+function cardHTML(f) {
+  return '<article data-open-favor="' + esc(f.id) + '" class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-shadow">' +
+    '<div class="p-sm flex-grow">' +
+      '<div class="flex items-center gap-3 mb-sm">' + avatar(f.authorName, f.authorPhoto, 'w-11 h-11') +
+        '<div class="min-w-0 flex-1"><p class="font-semibold truncate">' + esc(f.authorName) + '</p>' +
+        (f.dist != null ? '<p class="text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">route</span>' + km(f.dist) + ' km de você</p>' : '') + '</div>' +
+        (f.mine ? '<span class="bg-tertiary/10 text-tertiary text-label-sm px-2 py-1 rounded-full shrink-0">Seu favor</span>' : '') +
+      '</div>' +
+      (f.category ? '<span class="bg-primary/10 text-primary text-label-sm px-xs py-1 rounded-full inline-flex items-center gap-1 mb-2"><span class="material-symbols-outlined text-[14px]">' + iconFor(f.category) + '</span> ' + esc(f.category) + '</span>' : '') +
+      '<h3 class="text-headline-md leading-tight mb-xs break-words">' + esc(f.title) + '</h3>' +
+      '<p class="flex items-center gap-1 text-on-surface-variant text-sm"><span class="material-symbols-outlined text-[16px]">location_on</span>' + esc(f.location) + '</p>' +
+    '</div>' +
+    '<div class="bg-surface-bright p-sm border-t border-dashed border-outline-variant/40 flex justify-between items-center">' +
+      '<div class="flex flex-col"><span class="text-label-sm text-on-surface-variant uppercase tracking-wider">Valor</span><span class="text-headline-md text-secondary-container font-bold">' + brl(f.price) + '</span></div>' +
+      '<span class="bg-primary text-on-primary text-label-md px-sm py-2 rounded-lg">Ver favor</span>' +
+    '</div></article>';
+}
+function bentoHTML(f) {
+  return '<div data-open-favor="' + esc(f.id) + '" class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-surface-variant/30 hover:shadow-md transition-all cursor-pointer">' +
+    '<div class="flex justify-between items-start mb-3 gap-2"><div class="flex gap-3 items-center min-w-0">' + avatar(f.authorName, f.authorPhoto, 'w-12 h-12') +
+    '<div class="min-w-0"><h4 class="text-label-md truncate">' + esc(f.authorName) + '</h4>' + (f.dist != null ? '<div class="text-[12px] text-on-surface-variant">' + km(f.dist) + ' km</div>' : '') + '</div></div>' +
+    '<div class="bg-secondary-container/20 text-secondary-container px-2 py-1 rounded text-label-sm font-bold shrink-0">' + brl(f.price) + '</div></div>' +
+    '<h5 class="font-medium mb-2 break-words">' + esc(f.title) + '</h5>' +
+    '<p class="text-on-surface-variant text-sm line-clamp-2 mb-3">' + esc(f.description) + '</p>' +
+    '<div class="flex justify-end"><span class="bg-secondary-container text-on-secondary-container text-label-sm px-4 py-2 rounded-lg">Oferecer ajuda</span></div></div>';
+}
+function renderExplorar() {
+  const lista = state.favores.filter(function (f) { return state.filtro === 'Todos' || f.category === state.filtro; });
+  let html;
+  if (lista.length) html = lista.map(cardHTML).join('');
+  else if (state.loadError && !state.favores.length) html = emptyHTML('cloud_off', 'Não foi possível carregar os favores', 'O servidor pode estar iniciando. Tente de novo em instantes.', 'Tentar de novo', 'carregarFavores()');
+  else if (state.favores.length) html = emptyHTML('search_off', 'Nenhum favor nessa categoria', '');
+  else html = emptyHTML('search_off', 'Nenhum favor por perto ainda', 'Seja a primeira pessoa a publicar um favor na sua região.', 'Publicar um favor', "showScreen('publicar')");
+  $('explorar-list').innerHTML = html;
+}
+function renderOferecer() {
+  const raio = Number($('oferecer-raio').value);
+  const dos_outros = state.favores.filter(function (f) { return !f.mine; });
+  const lista = dos_outros.filter(function (f) {
+    return (f.dist == null || f.dist <= raio) && (!state.skills.length || state.skills.indexOf(f.category) !== -1);
+  });
+  $('oferecer-list').innerHTML = lista.length ? lista.map(bentoHTML).join('')
+    : emptyHTML('search_off', dos_outros.length ? 'Nenhum favor com esses filtros' : 'Nenhum favor disponível', dos_outros.length ? 'Aumente o raio ou remova alguma categoria.' : 'Quando alguém publicar um favor na sua região, ele aparece aqui.');
+}
+async function carregarFavores() {
+  try {
+    const data = await api(EP.favors);
+    state.favores = (Array.isArray(data) ? data : []).map(normFavor);
+    state.loadError = false;
+  } catch (e) { state.loadError = true; }
+  renderExplorar(); renderOferecer();
+  if (!$('explorar-map-wrap').classList.contains('hidden')) desenharMapa();
+}
+function setExplorarView(v) {
+  $('explorar-list').classList.toggle('hidden', v !== 'list');
+  $('explorar-map-wrap').classList.toggle('hidden', v !== 'mapa');
+  setCls($('view-list-btn'), 'bg-white shadow-sm text-primary', 'text-on-surface-variant', v === 'list');
+  setCls($('view-map-btn'), 'bg-white shadow-sm text-primary', 'text-on-surface-variant', v === 'mapa');
+  if (v === 'mapa') desenharMapa();
+}
+
+/* ======================= DETALHES / PROPOSTA ======================= */
+function abrirFavor(id) {
+  const f = CACHE[id]; if (!f) return;
+  state.favorAtual = f;
+  $('det-autor').innerHTML = avatar(f.authorName, f.authorPhoto, 'w-16 h-16 text-headline-md') +
+    '<div class="flex-1 min-w-0"><p class="text-label-sm text-on-surface-variant">Publicado por</p><h2 class="text-headline-md truncate">' + esc(f.authorName) + '</h2></div>';
+  $('det-titulo').textContent = f.title;
+  $('det-cat').innerHTML = f.category ? '<div class="inline-flex items-center bg-primary/10 text-primary px-3 py-1 rounded-full text-label-md"><span class="material-symbols-outlined mr-1 text-[18px]">' + iconFor(f.category) + '</span>' + esc(f.category) + '</div>' : '';
+  $('det-preco').textContent = brl(f.price);
+  $('det-desc').textContent = f.description;
+  $('det-data').textContent = f.date ? 'Publicado em ' + fmtDate(f.date) : '';
+  $('det-local').textContent = (f.address ? f.address + ' — ' : '') + f.location + (f.dist != null ? ' · ' + km(f.dist) + ' km de você' : '');
+  $('det-map').src = mapsSrc(f.address, f.location);
+  $('det-bar').innerHTML = f.mine
+    ? '<div class="flex gap-2"><button onclick="abrirEditar()" class="flex-1 bg-primary text-on-primary font-bold py-3 rounded-lg flex justify-center items-center gap-2"><span class="material-symbols-outlined">edit</span> Editar</button><button onclick="excluirFavor()" class="flex-1 bg-error/10 text-error font-bold py-3 rounded-lg flex justify-center items-center gap-2"><span class="material-symbols-outlined">delete</span> Excluir</button></div><p class="text-center text-on-surface-variant text-label-sm mt-2">Este é o seu favor — você não pode enviar proposta para ele.</p>'
+    : '<button onclick="irParaProposta()" class="w-full bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg flex justify-center items-center gap-2"><span class="material-symbols-outlined">campaign</span> Enviar proposta</button>';
+  navigate('detalhes');
+}
+function usarModelo(i) { $('prop-msg').value = TEMPLATES[i].text(state.favorAtual); }
+function irParaProposta() {
+  const f = state.favorAtual; if (!f || f.mine) return;
+  $('prop-resumo').innerHTML = '<div class="flex items-start justify-between mb-sm gap-3"><div class="min-w-0"><h2 class="text-body-lg font-semibold mb-1 break-words">' + esc(f.title) + '</h2>' +
+    '<div class="flex items-center gap-2 text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">location_on</span><span class="text-label-md">' + esc(f.location) + '</span></div></div>' +
+    '<div class="bg-secondary-container/10 text-secondary-container px-3 py-1 rounded-full text-body-md font-bold shrink-0">' + brl(f.price) + '</div></div>' +
+    '<div class="flex items-center gap-3 pt-sm border-t border-surface-variant">' + avatar(f.authorName, f.authorPhoto, 'w-10 h-10') + '<p class="text-label-md">' + esc(f.authorName) + '</p></div>';
+  $('prop-chips').innerHTML = TEMPLATES.map(function (t, i) {
+    return '<button type="button" onclick="usarModelo(' + i + ')" class="px-3 py-1.5 rounded-full text-label-sm border bg-surface text-on-surface-variant border-outline-variant">' + t.label + '</button>';
+  }).join('');
+  usarModelo(0);
+  $('prop-valor').value = f.price || '';
+  navigate('proposta');
+}
+async function handleProposta(ev) {
+  ev.preventDefault();
+  const f = state.favorAtual; if (!f) return false;
+  const text = $('prop-msg').value.trim();
+  if (!text) { toast('Escreva uma mensagem.'); return false; }
+  setLoading('prop-btn', true);
+  try {
+    const r = await api(EP.convs, { method: 'POST', body: JSON.stringify({ favorId: f.id, text: text, offer: Number($('prop-valor').value) || null }) });
+    toast('Proposta enviada!');
+    await abrirChat(r.id, true);
+  } catch (e) { toast(e.message); }
+  finally { setLoading('prop-btn', false); }
+  return false;
+}
+
+/* ======================= PUBLICAR ======================= */
+function previewMapa() {
+  clearTimeout(mapTimer);
+  mapTimer = setTimeout(function () {
+    const a = $('pub-endereco').value.trim(), l = $('pub-local').value.trim();
+    $('pub-map-wrap').classList.toggle('hidden', !a && !l);
+    if (a || l) $('pub-map').src = mapsSrc(a, l);
+  }, 700);
+}
+async function handlePublicar(ev) {
+  ev.preventDefault();
+  const form = ev.target, err = $('pub-error');
+  err.classList.add('hidden'); setLoading('pub-btn', true);
+  let salvo = false;
+  try {
+    await api(EP.favors, { method: 'POST', body: JSON.stringify({
+      title: $('pub-titulo').value, description: $('pub-detalhes').value, location: $('pub-local').value,
+      address: $('pub-endereco').value, price: Number($('pub-valor').value), category: state.catPub
+    }) });
+    salvo = true;
+  } catch (e) { err.textContent = e.message; err.classList.remove('hidden'); }
+  setLoading('pub-btn', false);
+  if (salvo) {
+    try {
+      form.reset(); state.catPub = '';
+      document.querySelectorAll('.cat-select').forEach(function (b) { setCls(b, SEL, UNSEL, false); });
+      $('pub-local').value = (state.user && state.user.location) || '';
+      $('pub-map-wrap').classList.add('hidden');
+      toast('Favor publicado com sucesso!');
+    } catch (e) { /* o favor já foi salvo; falha só visual não pode virar erro de publicação */ }
+    showScreen('explorar');
+  }
+  return false;
+}
+
+/* ======================= CHAT ======================= */
+async function carregarConversas() {
+  try { state.convs = await api(EP.convs); } catch (e) { /* mantém a lista anterior */ }
+  renderConversas();
+}
+function renderConversas() {
+  const box = $('mensagens-list');
+  if (!state.convs.length) { box.innerHTML = emptyHTML('forum', 'Nenhuma conversa ainda', 'Toque em "Enviar proposta" em um favor para começar.', 'Ver favores', "showScreen('explorar')"); return; }
+  const me = String(state.user.id);
+  box.innerHTML = state.convs.map(function (c) {
+    const w = c.with || {}, m = c.lastMessage;
+    return '<button data-open-conv="' + esc(c.id) + '" class="w-full flex items-center gap-3 p-sm bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant/30 text-left">' + avatar(w.name, w.photo, 'w-12 h-12') +
+      '<div class="flex-1 min-w-0"><div class="flex justify-between gap-2"><span class="font-semibold truncate">' + esc(w.name || 'Vizinho') + '</span><span class="text-label-sm text-on-surface-variant shrink-0">' + (m ? fmtTime(m.createdAt) : '') + '</span></div>' +
+      (c.favor ? '<p class="text-label-sm text-primary truncate">' + esc(c.favor.title) + '</p>' : '') +
+      '<p class="text-sm text-on-surface-variant truncate">' + (m ? (m.sender === me ? 'Você: ' : '') + esc(m.text) : '') + '</p></div></button>';
+  }).join('');
+}
+function renderChat(scroll) {
+  const c = state.conv; if (!c) return;
+  const me = String(state.user.id);
+  const banner = c.favor ? '<div class="bg-primary/5 rounded-xl p-sm text-center mb-2"><p class="text-label-sm text-on-surface-variant">Sobre o favor</p><p class="font-semibold break-words">' + esc(c.favor.title) + '</p>' + (c.favor.price != null ? '<p class="text-label-sm text-secondary">' + brl(c.favor.price) + '</p>' : '') + '</div>' : '';
+  $('chat-msgs').innerHTML = banner + c.messages.map(function (m) {
+    const mine = m.sender === me;
+    return '<div class="flex ' + (mine ? 'justify-end' : 'justify-start') + '"><div class="max-w-[80%] px-3 py-2 rounded-2xl ' + (mine ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface') + '">' +
+      (m.offer ? '<div class="text-label-sm font-bold mb-1">Oferta: ' + brl(m.offer) + '</div>' : '') +
+      '<p class="whitespace-pre-wrap break-words">' + esc(m.text) + '</p>' +
+      '<span class="block text-[10px] opacity-70 mt-1 text-right">' + fmtTime(m.createdAt, true) + '</span></div></div>';
+  }).join('');
+  if (scroll) window.scrollTo(0, document.body.scrollHeight);
+}
+async function abrirChat(id, veioDaProposta) {
+  try { state.conv = await api(EP.convs + '/' + id); } catch (e) { toast(e.message); return; }
+  marcarLidaAtual();
+  state.chatTitle = (state.conv.with && state.conv.with.name) || 'Conversa';
+  if (veioDaProposta) { state.history = ['mensagens']; showScreen('chat'); } else navigate('chat');
+  renderChat(true);
+}
+async function enviarMsg(ev) {
+  ev.preventDefault();
+  const inp = $('chat-input'), text = inp.value.trim();
+  if (!text || !state.conv) return false;
+  inp.value = '';
+  try {
+    const m = await api(EP.convs + '/' + state.conv.id + '/messages', { method: 'POST', body: JSON.stringify({ text: text }) });
+    state.conv.messages.push(m);
+    renderChat(true);
+  } catch (e) { inp.value = text; toast(e.message); }
+  inp.focus();
+  return false;
+}
+async function pollChat() {
+  if (!state.conv) return;
+  try {
+    const c = await api(EP.convs + '/' + state.conv.id);
+    const mudou = c.messages.length !== state.conv.messages.length;
+    const perto = window.innerHeight + window.scrollY >= document.body.scrollHeight - 140;
+    state.conv = c;
+    if (mudou) { renderChat(perto); marcarLidaAtual(); }
+  } catch (e) { /* tenta de novo no próximo ciclo */ }
+}
+
+/* ======================= PERFIL ======================= */
+async function carregarPerfil() {
+  try {
+    const l = await api(EP.mine);
+    $('perfil-ativos').textContent = l.filter(function (f) { return (f.status || 'aberto') === 'aberto'; }).length;
+  } catch (e) { /* mantém o valor atual */ }
+}
+async function abrirSub(kind) {
+  const m = MENU.find(function (x) { return x[0] === kind; });
+  state.subTitle = m[2]; navigate('sub');
+  const box = $('sub-content');
+  if (kind === 'meus') {
+    box.innerHTML = emptyHTML('hourglass_top', 'Carregando...', '');
+    try {
+      const lista = (await api(EP.mine)).map(normFavor);
+      box.innerHTML = lista.length ? lista.map(cardHTML).join('') : emptyHTML('receipt_long', 'Você ainda não publicou nenhum favor', '', 'Publicar um favor', "showScreen('publicar')");
+    } catch (e) { box.innerHTML = emptyHTML('cloud_off', 'Não foi possível carregar', e.message); }
+  } else if (kind === 'notif') {
+    renderNotif();
+  } else if (kind === 'config') {
+    const u = state.user || {};
+    box.innerHTML = '<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant/50 divide-y divide-surface-variant/50">' +
+      [['Nome', u.name], ['E-mail', u.email], ['Localização', u.location]].map(function (r) {
+        return '<div class="p-sm"><p class="text-label-sm text-on-surface-variant">' + r[0] + '</p><p class="font-medium break-words">' + esc(r[1] || '—') + '</p></div>';
+      }).join('') + '</div>';
+  } else {
+    const t = { ajudei: ['Você ainda não ajudou em nenhum favor', 'Veja os favores disponíveis na aba Oferecer.'], aval: ['Não há avaliações ainda', ''], receb: ['Nenhuma forma de recebimento cadastrada', ''] }[kind];
+    box.innerHTML = emptyHTML(m[1], t[0], t[1]);
+  }
+}
+
+/* ======================= LOGIN / CADASTRO ======================= */
+let cadastroFotoBase64 = null;
+function previewFoto(ev) {
+  const file = ev.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const img = new Image();
+    img.onload = function () {
+      const MAX = 200; let w = img.width, h = img.height;
+      if (w > h && w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      else if (h >= w && h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      cadastroFotoBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      $('cadastro-foto-preview').innerHTML = '<img src="' + cadastroFotoBase64 + '" class="w-full h-full object-cover"/>';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+async function authRequest(path, payload, errId, btnId) {
+  const err = $(errId); err.classList.add('hidden'); setLoading(btnId, true);
+  try {
+    const res = await fetch(API_BASE + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const data = await res.json().catch(function () { return {}; });
+    if (!res.ok) { err.textContent = data.error || ('Não foi possível concluir (erro ' + res.status + ').'); err.classList.remove('hidden'); return; }
+    iniciarSessao(data);
+  } catch (e) {
+    err.textContent = 'Não foi possível conectar ao servidor. Ele pode estar iniciando — tente de novo em alguns segundos.'; err.classList.remove('hidden');
+  } finally { setLoading(btnId, false); }
+}
+function handleLogin(ev) {
+  ev.preventDefault();
+  authRequest(EP.login, { email: $('login-email').value, password: $('login-senha').value }, 'login-error', 'login-btn');
+  return false;
+}
+function handleCadastro(ev) {
+  ev.preventDefault();
+  const p = { name: $('cadastro-nome').value, email: $('cadastro-email').value, password: $('cadastro-senha').value, location: $('cadastro-bairro').value };
+  if (cadastroFotoBase64) p.photo = cadastroFotoBase64;
+  authRequest(EP.register, p, 'cadastro-error', 'cadastro-btn');
+  return false;
+}
+function iniciarSessao(data) {
+  state.user = data.user || data.usuario || {};
+  if (data.token) localStorage.setItem('authToken', data.token);
+  localStorage.setItem('authUser', JSON.stringify(state.user));
+  entrarNoApp();
+}
+function entrarNoApp() {
+  const u = state.user || {};
+  $('explorar-bairro').textContent = u.location || 'você';
+  $('perfil-nome').textContent = u.name || 'Você';
+  $('perfil-bairro').textContent = u.location || '';
+  $('perfil-foto').innerHTML = avatar(u.name, u.photo, 'w-20 h-20 text-headline-md');
+  $('header-avatar').innerHTML = u.photo ? '<img src="' + esc(u.photo) + '" alt="" class="w-full h-full object-cover"/>' : '<span class="material-symbols-outlined text-[20px]">person</span>';
+  $('pub-local').value = u.location || '';
+  showScreen('explorar');
+  avisoTick = 0; avisosIniciado = false; checarAvisos();
+}
+function handleLogout() {
+  state.user = null; state.conv = null; state.favores = []; state.convs = []; state.history = []; pintarBadge();
+  localStorage.removeItem('authToken'); localStorage.removeItem('authUser');
+  $('login-senha').value = '';
+  showScreen('auth');
+}
+function restaurarSessao() {
+  try {
+    const t = localStorage.getItem('authToken'), u = JSON.parse(localStorage.getItem('authUser') || 'null');
+    if (t && u && u.id) { state.user = u; entrarNoApp(); }
+  } catch (e) { /* segue para o login */ }
+}
+
+/* ======================= MAPA COM PONTOS ======================= */
+let leafMap = null, leafLayer = null;
+function jitter(x) { const n = parseInt(String(x).slice(-4), 16) || 0; return ((n % 200) - 100) / 60000; }
+function desenharMapa() {
+  const wrap = $('explorar-map-wrap');
+  if (typeof L === 'undefined') { wrap.innerHTML = emptyHTML('cloud_off', 'Não foi possível carregar o mapa', 'Verifique a conexão e tente de novo.'); leafMap = null; return; }
+  if (!leafMap) {
+    wrap.innerHTML = '<div id="explorar-map" style="height:62vh;isolation:isolate" class="rounded-xl overflow-hidden border border-surface-container-high"></div>';
+    leafMap = L.map('explorar-map').setView([-23.55, -46.63], 11);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(leafMap);
+    leafLayer = L.layerGroup().addTo(leafMap);
+  }
+  leafMap.invalidateSize(); leafLayer.clearLayers();
+  const pts = [];
+  state.favores.forEach(function (f) {
+    if (f.lat == null || f.lng == null) return;
+    const p = [f.lat + jitter(f.id), f.lng + jitter(String(f.id).slice(0, 4))]; pts.push(p);
+    L.circleMarker(p, { radius: 11, color: '#fff', weight: 2, fillColor: f.mine ? '#fea619' : '#004ac6', fillOpacity: 1 }).addTo(leafLayer)
+      .bindPopup('<b>' + esc(f.title) + '</b><br>' + brl(f.price) + (f.dist != null ? ' · ' + km(f.dist) + ' km' : '') + '<br><a href="javascript:void(0)" onclick="abrirFavor(\'' + esc(f.id) + '\')" style="color:#004ac6;font-weight:600">Ver favor</a>');
+  });
+  if (pts.length) leafMap.fitBounds(pts, { padding: [30, 30], maxZoom: 15 });
+}
+
+/* ======================= EDITAR / EXCLUIR MEUS FAVORES ======================= */
+function abrirEditar() {
+  const f = state.favorAtual; if (!f || !f.mine) return;
+  $('edit-titulo').value = f.title; $('edit-detalhes').value = f.description; $('edit-valor').value = f.price; $('edit-endereco').value = f.address || '';
+  $('edit-error').classList.add('hidden');
+  navigate('editar', 'Editar favor');
+}
+async function handleEditar(ev) {
+  ev.preventDefault();
+  const f = state.favorAtual, err = $('edit-error');
+  err.classList.add('hidden'); setLoading('edit-btn', true);
+  let ok = false;
+  try {
+    await api(EP.favors + '/' + f.id, { method: 'PUT', body: JSON.stringify({ title: $('edit-titulo').value, description: $('edit-detalhes').value, price: Number($('edit-valor').value), address: $('edit-endereco').value }) });
+    ok = true;
+  } catch (e) { err.textContent = e.message; err.classList.remove('hidden'); }
+  setLoading('edit-btn', false);
+  if (ok) { toast('Favor atualizado!'); showScreen('explorar'); }
+  return false;
+}
+async function excluirFavor() {
+  const f = state.favorAtual; if (!f || !f.mine) return;
+  if (!confirm('Excluir este favor? Essa ação não pode ser desfeita.')) return;
+  try { await api(EP.favors + '/' + f.id, { method: 'DELETE' }); toast('Favor excluído.'); showScreen('explorar'); }
+  catch (e) { toast(e.message); }
+}
+
+/* ======================= AVISOS (mensagem nova / favor perto) ======================= */
+const NEAR_KM = 10;
+let avisoTick = 0, avisosIniciado = false;
+function lerJSON(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
+function avisar(msg) {
+  toast(msg);
+  try { if (window.Notification && Notification.permission === 'granted' && document.hidden) new Notification('Favor', { body: msg }); } catch (e) { /* sem aviso do aparelho */ }
+}
+function naoLidas(list) {
+  if (!state.user) return [];
+  const seen = lerJSON('seenConv', {}), me = String(state.user.id);
+  return (list || []).filter(function (c) { const m = c.lastMessage; return m && m.sender !== me && new Date(m.createdAt).getTime() > (seen[c.id] || 0); });
+}
+function marcarLidaAtual() {
+  const c = state.conv; if (!c || !c.messages || !c.messages.length) return;
+  const seen = lerJSON('seenConv', {}); seen[c.id] = new Date(c.messages[c.messages.length - 1].createdAt).getTime();
+  localStorage.setItem('seenConv', JSON.stringify(seen));
+  state.convs.forEach(function (x) { if (x.id === c.id && x.lastMessage) x.lastMessage.sender = x.lastMessage.sender; });
+  pintarBadge();
+}
+function pintarBadge() {
+  const n = naoLidas(state.convs).length;
+  document.querySelectorAll('.nav-item').forEach(function (a) {
+    if (a.dataset.nav !== 'mensagens') return;
+    let b = a.querySelector('.badge');
+    if (!b) { b = document.createElement('span'); b.className = 'badge absolute top-0 right-2 bg-error text-white text-[10px] min-w-[18px] h-[18px] rounded-full flex items-center justify-center'; a.classList.add('relative'); a.appendChild(b); }
+    b.textContent = n; b.classList.toggle('hidden', !n);
+  });
+}
+async function checarAvisos() {
+  if (document.hidden || !state.user) return;
+  try {
+    const antes = naoLidas(state.convs).map(function (c) { return c.id; });
+    state.convs = await api(EP.convs);
+    if (avisosIniciado) {
+      const novas = naoLidas(state.convs).filter(function (c) { return antes.indexOf(c.id) === -1 && !(state.current === 'chat' && state.conv && state.conv.id === c.id); });
+      if (novas.length) avisar('Nova mensagem de ' + ((novas[0].with && novas[0].with.name) || 'um vizinho'));
+    }
+    pintarBadge();
+    if (state.current === 'mensagens') renderConversas();
+  } catch (e) { /* tenta no próximo ciclo */ }
+  if (++avisoTick % 3 === 1) {
+    try {
+      const lista = (await api(EP.favors)).map(normFavor), base = Number(localStorage.getItem('favorBase')) || 0;
+      const novos = lista.filter(function (f) { return !f.mine && f.dist != null && f.dist <= NEAR_KM && new Date(f.date).getTime() > base; });
+      const topo = Math.max.apply(null, [0].concat(lista.map(function (f) { return new Date(f.date).getTime() || 0; })));
+      if (topo) localStorage.setItem('favorBase', String(topo));
+      state.favores = lista;
+      if (state.current === 'explorar') renderExplorar();
+      if (state.current === 'oferecer') renderOferecer();
+      if (base && avisosIniciado && novos.length) avisar('Novo favor perto de você: ' + novos[0].title + ' (' + km(novos[0].dist) + ' km)');
+    } catch (e) { /* tenta no próximo ciclo */ }
+  }
+  avisosIniciado = true;
+}
+function renderNotif() {
+  const perm = window.Notification ? Notification.permission : 'unsupported';
+  $('sub-content').innerHTML = '<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant/50 p-md space-y-3"><p class="font-semibold">Avisos de mensagens e de favores perto de você</p><p class="text-on-surface-variant text-label-md">Com o Favor aberto, aparece um aviso na tela quando chega mensagem ou surge um favor a até ' + NEAR_KM + ' km. Ativando abaixo, o aparelho também avisa com o app em segundo plano.</p>' +
+    (perm === 'granted' ? '<p class="text-primary font-semibold">Avisos do aparelho ativados</p>' : perm === 'default' ? '<button onclick="ativarAvisos()" class="w-full bg-secondary-container text-on-secondary-container font-bold py-3 rounded-lg">Ativar avisos neste aparelho</button>' : '<p class="text-error text-label-md">Este navegador não permite avisos do aparelho.</p>') + '</div>';
+}
+function ativarAvisos() { Notification.requestPermission().then(renderNotif); }
+
+/* ======================= INIT ======================= */
+document.addEventListener('click', function (e) {
+  const fav = e.target.closest('[data-open-favor]');
+  if (fav) { abrirFavor(fav.dataset.openFavor); return; }
+  const cv = e.target.closest('[data-open-conv]');
+  if (cv) abrirChat(cv.dataset.openConv, false);
+});
+setInterval(function () {
+  if (document.hidden || !state.user) return;
+  if (state.current === 'chat') pollChat();
+  else if (state.current === 'mensagens') carregarConversas();
+}, 4000);
+
+setInterval(checarAvisos, 20000);
+renderChips();
+setExplorarView('list');
+restaurarSessao();
+
+</script>
+</body>
+</html>
